@@ -20,14 +20,13 @@
   <a href="https://github.com/CluelessCatBurger/wl_shimeji"><img alt="Engine" src="https://img.shields.io/badge/engine-wl__shimeji-7c3aed?style=flat-square"></a>
   <a href="LICENSE"><img alt="License: GPL-2.0" src="https://img.shields.io/badge/license-GPL--2.0-blue?style=flat-square"></a>
   <a href="https://github.com/kyzmapiratov/Menagerie/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/kyzmapiratov/Menagerie?style=flat-square&color=2563eb&label=release"></a>
-  <a href="https://aur.archlinux.org/packages/menagerie-bin"><img alt="AUR" src="https://img.shields.io/badge/arch%20linux-aur-1793d1?style=flat-square"></a>
 </p>
 
 https://github.com/user-attachments/assets/058f1f1b-2129-426c-a748-adcb52928997
 
-Menagerie is the desktop app that [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) — the Wayland
-engine that actually draws the characters — never had: a catalog of a few thousand characters, one-click installs, a
-collection you can browse, a scene you can save and restore, and a way to bring everyone back at login.
+Menagerie is a modern graphical front end for [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) — the Wayland
+engine that draws desktop mascots. It provides everything the engine lacks on its own: a catalog of thousands of
+characters, one-click installation, a visual collection browser, saved scene presets, and login autostart.
 
 ## Installation
 
@@ -40,17 +39,17 @@ curl -fsSL https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/install
 > [!TIP]
 > Run `curl -fsSL https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/install.sh | bash -s -- --dry-run` to preview commands before anything is executed.
 
-Or install using your distribution's native package:
+Or install using your distribution's package / archive:
 
 | System | Command / Package |
 |---|---|
-| **Arch Linux**, CachyOS, EndeavourOS, Manjaro… | `yay -S menagerie-bin` (prebuilt) or `menagerie` (builds it) |
+| **Arch Linux**, CachyOS, EndeavourOS, Manjaro… | `./install.sh` or build locally via `packaging/arch/menagerie-bin` (`makepkg -si`) |
 | **Debian, Ubuntu, Mint, Pop!_OS…** | `sudo apt install ./menagerie_*.deb` from the [latest release](https://github.com/kyzmapiratov/Menagerie/releases/latest) |
 | **Fedora**, openSUSE… | `sudo dnf install ./menagerie-*.rpm` (`zypper install` on openSUSE) |
 | **Anything else** | The `.AppImage` from the release, or `./install.sh --source` to build it |
 
 > [!IMPORTANT]
-> Menagerie requires a Wayland compositor with `wlr-layer-shell` support. Developed and tested on **niri**, with support for **KDE Plasma** and **Hyprland**.
+> Menagerie requires a Wayland compositor with `wlr-layer-shell` support. Developed and tested on **niri**, supported on **KDE Plasma**, and usable on **Hyprland** (with known clipping quirks).
 
 > [!WARNING]
 > **GNOME (Mutter)** is unsupported because Mutter does not implement `wlr-layer-shell`. The app detects GNOME on launch and displays an informative notice.
@@ -90,13 +89,13 @@ Every route, the engine for each distribution, updating and removal: **[docs/ins
 
 | Compositor | Support Status | Notes |
 |---|---|---|
-| **niri** | **Full support** | Developed and tested daily on niri. Automatic config setup (`include "menagerie.kdl"`) with backup and validation. |
+| **niri** | **Full support (Tested)** | Developed and tested daily on niri. Clean rendering with no surface clipping, automatic config integration (`include "menagerie.kdl"`), backup and validation. |
 | **KDE Plasma** | **Supported** | Launch at login via XDG autostart entry; shortcuts configurable in System Settings. Mascots can walk on windows using the engine's KWin plugin. |
-| **Hyprland** | **Supported (with clipping limit)** | Automatic config generation (`source` line). Engine authors note that Hyprland clips subsurfaces differently, so edges may look cut off. |
-| **GNOME** | **Unsupported** | Mutter does not implement `wlr-layer-shell`. The app detects GNOME on startup and displays an informative notice. |
+| **Hyprland** | **Working with limitations (unsupported by engine)** | Automatic config generation (`source` line). `wl_shimeji` officially lists Hyprland as unsupported due to compositor-side `wl_subsurface` clipping (mascot edges get cut off by window borders/panels). |
+| **GNOME** | **Unsupported (Does not work)** | Mutter does not implement `wlr-layer-shell`. The app detects GNOME on startup and displays an informative notice. |
 
 > [!NOTE]
-> **Hyprland users:** Engine authors note that Hyprland handles subsurfaces differently, so mascot edges may occasionally appear clipped at the border of the display.
+> **Hyprland users:** While mascots will spawn and move, `wl_shimeji` is officially unsupported on Hyprland because Hyprland clips subsurfaces differently. Mascots may appear sliced or cut off when crossing window borders or panels.
 
 Details: [Will it work on my system?](docs/install.md#will-it-work-on-my-system).
 

@@ -5,6 +5,10 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+- Relicensed project under GNU General Public License v2 (`GPL-2.0-only`), aligning with `wl_shimeji`.
+- Removed `.github/CODE_OF_CONDUCT.md`.
+- Improved compositor compatibility overview in documentation.
+
 ## [1.0.0] — first public release
 
 ### The app

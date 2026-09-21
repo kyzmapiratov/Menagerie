@@ -42,7 +42,7 @@
     "longDescription": "A front end for wl_shimeji, the Wayland engine that draws Shimeji: a catalog of a few thousand characters, one-click installs, a collection view, a scene with presets, and start-at-login. wl_shimeji itself is installed separately.",
     "publisher": "Menagerie contributors",
     "homepage": "https://github.com/kyzmapiratov/Menagerie",
-    "license": "MIT",
+    "license": "GPL-2.0-only",
     "licenseFile": "../LICENSE",
     "copyright": "Copyright (c) Menagerie contributors",
     "icon": [

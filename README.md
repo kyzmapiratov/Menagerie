@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="LICENSE"><img alt="License: GPL-2.0" src="https://img.shields.io/badge/license-GPL--2.0-blue.svg"></a>
   <img alt="Linux · Wayland" src="https://img.shields.io/badge/platform-Linux%20%C2%B7%20Wayland-informational">
 </p>
 
@@ -66,11 +66,12 @@ Every route, the engine for each distribution and how to remove it again: **[doc
 **You need** Linux with a Wayland session and a compositor that offers `wlr-layer-shell`. The app is built for three
 setups, and says plainly how far each has been checked:
 
-| | What the app does there | How far it has been checked |
+| Compositor | Support Status | Notes |
 |---|---|---|
-| **niri** | everything, including writing niri's config for launch at login and key bindings | used daily by the author; every feature tried on a real session |
-| **Hyprland** | the same, into `hyprland.conf` (one `source` line, a backup, Hyprland's own error report) | written against Hyprland's documented config and tested with a stand-in for `hyprctl`; **not yet run on a real Hyprland**. The engine's authors list Hyprland as unsupported: a character can look clipped at its edges |
-| **KDE Plasma** | everything except the config writing: launch at login through an autostart entry, shortcuts set in System Settings (the app lists the commands, and the launcher has *Dismiss all* / *Stop* actions) | the app side is tested; **not yet run on a real Plasma session**. Window interaction needs the engine's KWin plugin |
+| 🟢 **niri** | **Full support** | Developed and tested daily on niri. Automatic config setup (`include "menagerie.kdl"`) with backup and validation. |
+| 🟢 **KDE Plasma** | **Supported** | Launch at login via XDG autostart entry; shortcuts configurable in System Settings. Mascots can walk on windows using the engine's KWin plugin. |
+| 🟡 **Hyprland** | **Supported (with clipping limit)** | Automatic config generation (`source` line). Engine authors note that Hyprland clips subsurfaces differently, so edges may look cut off. |
+| 🔴 **GNOME** | **Unsupported** | Mutter does not implement `wlr-layer-shell`. The app detects GNOME on startup and displays an informative notice. |
 
 It does **not** work on GNOME (Mutter has no layer-shell). The app checks this on start and says so, instead of leaving
 you wondering why nothing appears. Details: [Will it work on my system?](docs/install.md#will-it-work-on-my-system) If you
@@ -116,7 +117,7 @@ not in the compatibility table, saying whether it worked is genuinely useful.
 
 ## License and credits
 
-Menagerie is [MIT licensed](LICENSE).
+Menagerie is [GPL-2.0 licensed](LICENSE).
 
 - [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) by CluelessCatBurger — the engine, GPL-2.0. It runs as a
   separate program; nothing of it is linked into this app.

@@ -14,7 +14,7 @@ pkgrel=1
 pkgdesc="Browse, install and summon Shimeji characters for wl_shimeji on Wayland"
 arch=('x86_64' 'aarch64')
 url="https://github.com/kyzmapiratov/Menagerie"
-license=('MIT')
+license=('GPL-2.0-only')
 
 # wl_shimeji is the engine that actually draws the characters. Without it the app
 # starts, and tells you so, but has nothing to drive.

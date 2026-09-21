@@ -31,7 +31,7 @@ src-tauri/tauri.conf.json          window, security policy, bundle settings (.de
 packaging/                         launcher entry, icon, AppStream metadata, stage.sh, make-tarball.sh, Arch PKGBUILDs
 tools/ui-harness/                  checks the interface in the real WebKitGTK engine, off screen (server, driver, mock, suites)
 docs/                              install, troubleshooting, architecture, development, third-party, and img/
-.github/                           CI, release workflow, issue and PR templates, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY
+.github/                           CI, release workflow, issue and PR templates, CONTRIBUTING, SECURITY
 ```
 
 ## Checks

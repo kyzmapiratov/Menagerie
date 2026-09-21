@@ -2,7 +2,7 @@
 name = "menagerie"
 version = "1.0.0"
 description = "Browse, install and summon Shimeji characters for wl_shimeji on Wayland"
-license = "MIT"
+license = "GPL-2.0-only"
 repository = "https://github.com/kyzmapiratov/Menagerie"
 edition = "2021"
 # The oldest compiler the locked dependencies build with (`time`, `image` and others ask

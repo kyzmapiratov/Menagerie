@@ -1,6 +1,6 @@
 # Third-party code and assets
 
-Menagerie itself is MIT-licensed (see [LICENSE](../LICENSE)). This file lists
+Menagerie itself is GPL-2.0 licensed (see [LICENSE](../LICENSE)). This file lists
 everything else that ships with it or that it depends on.
 
 ## Bundled in this repository
@@ -70,21 +70,15 @@ under its own license.
 ## Icon and logo
 
 `packaging/menagerie.svg` (and the PNG sizes rendered from it, and `docs/img/logo.svg`) is original artwork made for this
-project, under the same MIT license as the code.
+project, under the same GPL-2.0 license as the code.
 
 ## Build dependencies
 
 The Rust crates and the Tauri framework are pulled in by Cargo and are not
 redistributed in this repository. Tauri is dual-licensed Apache-2.0 / MIT. About 600 crates are linked
-into the binary; checked against `Cargo.lock` (`cargo metadata`), all of them are under permissive licenses
-(MIT, Apache-2.0, BSD, ISC, Zlib, Unicode-3.0, Unlicense, BSL-1.0) — with one family to know about:
-
-| License | Crates | What it asks |
-|---|---|---|
-| MPL-2.0 | `cssparser`, `cssparser-macros`, `selectors`, `dtoa-short`, `option-ext`, `r-efi` | Changes to *those files* would have to be published under MPL-2.0. They are used unmodified, as published on crates.io. |
-| LGPL-2.1-or-later | offered only as one alternative of a dual license (`MIT OR Apache-2.0 OR LGPL-2.1-or-later`); the MIT terms are used | nothing |
-
-No GPL or AGPL code is linked, which is what keeps this project's MIT license possible. Re-check after adding a dependency:
+into the binary; checked against `Cargo.lock` (`cargo metadata`), all of them are under permissive or
+weak copyleft licenses (MIT, Apache-2.0, BSD, ISC, Zlib, Unicode-3.0, Unlicense, BSL-1.0, MPL-2.0, LGPL),
+which are fully compatible with Menagerie's GPL-2.0 license. Re-check after adding a dependency:
 `cargo metadata --format-version 1 --locked` lists every crate's `license`.
 
 The front end is plain files with no bundled JavaScript library and no web font, so no npm package ends up in what is shipped

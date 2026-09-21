@@ -1,19 +1,26 @@
 <p align="center">
-  <img src="docs/img/logo.svg" alt="" width="88" height="88">
+  <img src="docs/img/logo.svg" alt="" width="96" height="96">
 </p>
 
 <h1 align="center">Menagerie</h1>
 
 <p align="center">
-  Find, install and summon <b>Shimeji</b> — the little animated mascots that walk around your screen,<br>
-  climb your windows and throw themselves off the edges — on Wayland.
+  <b>A modern Shimeji companion manager for Linux & Wayland.</b><br>
+  Find, install and summon animated desktop mascots that walk around your screen,<br>
+  climb your windows and throw themselves off the edges.
 </p>
 
 <p align="center">
-  <a href="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="LICENSE"><img alt="License: GPL-2.0" src="https://img.shields.io/badge/license-GPL--2.0-blue.svg"></a>
-  <img alt="Linux · Wayland" src="https://img.shields.io/badge/platform-Linux%20%C2%B7%20Wayland-informational">
-  <a href="https://github.com/kyzmapiratov/Menagerie/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/kyzmapiratov/Menagerie?color=blue&label=release"></a>
+  Built with <b>Tauri v2</b>, <b>Rust</b>, and <b>wl_shimeji</b>
+</p>
+
+<p align="center">
+  <a href="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/kyzmapiratov/Menagerie/ci.yml?branch=main&style=flat-square&label=ci"></a>
+  <img alt="Platform" src="https://img.shields.io/badge/platform-Linux%20%C2%B7%20Wayland-2563eb?style=flat-square">
+  <a href="https://github.com/CluelessCatBurger/wl_shimeji"><img alt="Engine" src="https://img.shields.io/badge/engine-wl__shimeji-7c3aed?style=flat-square"></a>
+  <a href="LICENSE"><img alt="License: GPL-2.0" src="https://img.shields.io/badge/license-GPL--2.0-blue?style=flat-square"></a>
+  <a href="https://github.com/kyzmapiratov/Menagerie/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/kyzmapiratov/Menagerie?style=flat-square&color=2563eb&label=release"></a>
+  <a href="https://aur.archlinux.org/packages/menagerie-bin"><img alt="AUR" src="https://img.shields.io/badge/arch%20linux-aur-1793d1?style=flat-square"></a>
 </p>
 
 <p align="center">
@@ -24,27 +31,33 @@ Menagerie is the desktop app that [wl_shimeji](https://github.com/CluelessCatBur
 engine that actually draws the characters — never had: a catalog of a few thousand characters, one-click installs, a
 collection you can browse, a scene you can save and restore, and a way to bring everyone back at login.
 
-## Install
+## Installation
 
-One line. It installs the app, and `wl_shimeji` too if you do not have it:
+Install Menagerie and the `wl_shimeji` engine with a single command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/install.sh | bash
 ```
 
-Prefer to read a script first? It is [install.sh](install.sh), it prints every command before it runs,
-and `--dry-run` shows what it would do without doing it.
+> [!TIP]
+> Run `curl -fsSL https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/install.sh | bash -s -- --dry-run` to preview commands before anything is executed.
 
-Or use your distribution's own package:
+Or install using your distribution's native package:
 
-| System | How |
+| System | Command / Package |
 |---|---|
 | **Arch Linux**, CachyOS, EndeavourOS, Manjaro… | `yay -S menagerie-bin` (prebuilt) or `menagerie` (builds it) |
 | **Debian, Ubuntu, Mint, Pop!_OS…** | `sudo apt install ./menagerie_*.deb` from the [latest release](https://github.com/kyzmapiratov/Menagerie/releases/latest) |
 | **Fedora**, openSUSE… | `sudo dnf install ./menagerie-*.rpm` (`zypper install` on openSUSE) |
 | **Anything else** | The `.AppImage` from the release, or `./install.sh --source` to build it |
 
-Every route, the engine for each distribution and how to remove it again: **[docs/install.md](docs/install.md)**.
+> [!IMPORTANT]
+> Menagerie requires a Wayland compositor with `wlr-layer-shell` support. Developed and tested on **niri**, with support for **KDE Plasma** and **Hyprland**.
+
+> [!WARNING]
+> **GNOME (Mutter)** is unsupported because Mutter does not implement `wlr-layer-shell`. The app detects GNOME on launch and displays an informative notice.
+
+Every route, the engine for each distribution, updating and removal: **[docs/install.md](docs/install.md)**.
 
 ## Features
 
@@ -94,8 +107,6 @@ Active desktop mascots and screen physics:
 
 ## Compositor Support
 
-Menagerie requires a Linux Wayland session with a compositor implementing `wlr-layer-shell`:
-
 | Compositor | Support Status | Notes |
 |---|---|---|
 | **niri** | **Full support** | Developed and tested daily on niri. Automatic config setup (`include "menagerie.kdl"`) with backup and validation. |
@@ -103,9 +114,12 @@ Menagerie requires a Linux Wayland session with a compositor implementing `wlr-l
 | **Hyprland** | **Supported (with clipping limit)** | Automatic config generation (`source` line). Engine authors note that Hyprland clips subsurfaces differently, so edges may look cut off. |
 | **GNOME** | **Unsupported** | Mutter does not implement `wlr-layer-shell`. The app detects GNOME on startup and displays an informative notice. |
 
-It does **not** work on GNOME (Mutter has no layer-shell). The app checks this on start and says so, instead of leaving you wondering why nothing appears. Details: [Will it work on my system?](docs/install.md#will-it-work-on-my-system).
+> [!NOTE]
+> **Hyprland users:** Engine authors note that Hyprland handles subsurfaces differently, so mascot edges may occasionally appear clipped at the border of the display.
 
-## Quick start
+Details: [Will it work on my system?](docs/install.md#will-it-work-on-my-system).
+
+## Quick Start
 
 1. **Start it** from your application menu (`menagerie` in a terminal). If `wl_shimeji` is missing, a card tells you how to install it and provides a *Check again* button.
 2. **Catalog** → pick a pack or a character → **Install**. Characters you already have are marked and never replaced without asking. Prefer a file? Drop a `.zip` on the window.
@@ -113,9 +127,10 @@ It does **not** work on GNOME (Mutter has no layer-shell). The app checks this o
 4. **Scene** → **Save as preset…** to remember the crowd; the preset brings it back in one click.
 5. **Settings → Startup** → **Turn on**, so they are there when you log in.
 
-`Ctrl+K` opens a command palette anywhere; `Ctrl+1…4` switch tabs.
+> [!TIP]
+> Press `Ctrl+K` to open the command palette anywhere, or `Ctrl+1`…`4` to switch tabs.
 
-## Where things are kept
+## Where Things Are Kept
 
 | What | Where |
 |---|---|
@@ -127,7 +142,7 @@ It does **not** work on GNOME (Mutter has no layer-shell). The app checks this o
 
 ## Documentation
 
-| | |
+| Document | Description |
 |---|---|
 | [docs/install.md](docs/install.md) | Every way to install, the engine per distribution, compatibility, updating and removing |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Nothing appears · the overlay crashed · blank window · settings that "do nothing" |
@@ -140,7 +155,7 @@ It does **not** work on GNOME (Mutter has no layer-shell). The app checks this o
 
 Bug reports and patches are welcome — start with [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md). If your desktop is not in the compatibility table, saying whether it worked is genuinely useful.
 
-## License and credits
+## License and Credits
 
 Menagerie is [GPL-2.0 licensed](LICENSE).
 

@@ -75,12 +75,38 @@ python3 tools/ui-harness/run.py
 
 ---
 
-## 4. Releases and Version Bumping
+## 4. Versioning Lifecycle: Commits vs. Releases
 
-When releasing a new version or introducing user-facing features:
-1. **Update `CHANGELOG.md`**: Add concise, user-centric bullet points under `## [Unreleased]`.
-2. **Version Synchronization**: If bumping version `vX.Y.Z`, verify strict equality across:
-   * `src-tauri/Cargo.toml` (`version = "X.Y.Z"`)
-   * `src-tauri/tauri.conf.json` (`"version": "X.Y.Z"`)
-   * `package.json` (`"version": "X.Y.Z"`)
-   * `packaging/arch/menagerie/PKGBUILD` and `menagerie-bin/PKGBUILD`
+### Rule 1: Commits Are NOT Releases
+* **Never bump versions on routine commits, bug fixes, or incremental features**.
+* Normal git commits pushed to `main` trigger `ci.yml` (syntax checks, tests, clippy, package validation), but **they do NOT trigger `release.yml` and do NOT build binary release packages**.
+* All incremental changes must be recorded under the `## [Unreleased]` section in [CHANGELOG.md](../../CHANGELOG.md). The version number in `Cargo.toml`, `tauri.conf.json`, and `package.json` remains untouched during daily development.
+
+### Rule 2: How the Agent Determines Which Version to Apply
+When the user explicitly instructs to prepare a release (e.g., "Let's release", "Prepare next version", "Bump version"), the agent inspects the accumulated changes under `## [Unreleased]` in `CHANGELOG.md` and commits since the last tag:
+
+1. **MAJOR (`+1.0.0` — e.g., `1.0.0` → `2.0.0`)**:
+   * *When to apply*: Breaking changes to configuration or saved data (`library.json`, `prefs.json`), removing deprecated features, fundamental architecture overhaul that is incompatible with previous installs.
+2. **MINOR (`0.+1.0` — e.g., `1.0.0` → `1.1.0`)**:
+   * *When to apply*: Substantial new user-facing features added in a backward-compatible way (e.g., adding a third character catalog, introducing new desktop presets/controls, adding a new compositor integration).
+3. **PATCH (`0.0.+1` — e.g., `1.0.0` → `1.0.1`)**:
+   * *When to apply*: Bug fixes, crash prevention, documentation updates, styling adjustments, dependency updates, and minor stability improvements.
+
+### Rule 3: Execution of a Release
+Only execute a version bump when **explicitly requested by the user**:
+1. **Update `CHANGELOG.md`**: Convert the bullet points under `## [Unreleased]` into a dated release header:
+   ```markdown
+   ## [Unreleased]
+
+   ## [X.Y.Z] — YYYY-MM-DD
+   - [bullet points of changes]
+   ```
+2. **Synchronize All 5 Version Locations** (strict equality required by CI):
+   * `package.json` ➔ `"version": "X.Y.Z"`
+   * `src-tauri/Cargo.toml` ➔ `version = "X.Y.Z"`
+   * `src-tauri/tauri.conf.json` ➔ `"version": "X.Y.Z"`
+   * `packaging/arch/menagerie/PKGBUILD` ➔ `pkgver=X.Y.Z`, `pkgrel=1`
+   * `packaging/arch/menagerie-bin/PKGBUILD` ➔ `pkgver=X.Y.Z`, `pkgrel=1`
+3. **Triggering GitHub Releases**:
+   * Committing and pushing the updated files updates the repository.
+   * Creating and pushing a git tag (`git tag vX.Y.Z && git push origin main --tags`) triggers `.github/workflows/release.yml`, which compiles binaries, builds `.deb`, `.rpm`, and `.AppImage`, and publishes the GitHub Release.

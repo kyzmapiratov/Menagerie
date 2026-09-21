@@ -25,6 +25,17 @@
 
 <p align="center">
   <img src="docs/img/showcase-preview.png" alt="Menagerie desktop session" width="880">
+  <br>
+  <sub>
+    <b>Video Walkthrough (1080p):</b>
+    <a href="docs/img/walkthrough.mp4"><b>MP4</b></a> ·
+    <a href="docs/img/walkthrough.webm"><b>WebM</b></a>
+    &nbsp;·&nbsp; Chapters:
+    <a href="docs/img/part1_catalog.mp4">Catalog</a> ·
+    <a href="docs/img/part2_collection.mp4">Collection</a> ·
+    <a href="docs/img/part3_scene.mp4">Scene</a> ·
+    <a href="docs/img/part4_settings.mp4">Settings</a>
+  </sub>
 </p>
 
 Menagerie is the desktop app that [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) — the Wayland
@@ -61,49 +72,32 @@ Every route, the engine for each distribution, updating and removal: **[docs/ins
 
 ## Features
 
-### Catalog
-
-<p align="center">
-  <img src="docs/img/catalog.png" alt="Menagerie Catalog" width="880">
-</p>
-
-Two catalog sources, no account needed:
-- **shimejis.xyz**: Around sixty franchise packs with live animation previews on hover, search across everything, and batch installation.
-- **cachomon.com**: Free characters organized by franchise.
-- Existing characters are recognized and never overwritten without asking.
-
-### Collection
-
-<p align="center">
-  <img src="docs/img/collection.png" alt="Menagerie Collection" width="880">
-</p>
-
-Your local mascot library:
-- **Universe Grouping**: Group characters into clean franchises (Pokémon, Mario, Studio Ghibli, Anime, and more).
-- **Multi-select & Batch Summon**: Select multiple cards (`Shift` for a range, `Ctrl+A` for all) to summon entire groups at once.
-- **Drag & Drop**: Drop any `.zip` Shimeji archive directly on the window to extract, patch missing animation frames, and install.
-
-### Scene & Presets
-
-<p align="center">
-  <img src="docs/img/scene.png" alt="Menagerie Scene" width="880">
-</p>
-
-Active desktop mascots and screen physics:
-- **Real Window Physics**: Mascots walk along window titlebars, scale borders, and fall under gravity using Wayland `wlr-layer-shell`.
-- **One-Click Presets**: Save current mascot formations under custom names and bring them back anytime with one click.
-- **Screen Controls**: Summon random characters, inspect active mascots, or dismiss the crowd instantly.
-
-### Settings & Startup
-
-<p align="center">
-  <img src="docs/img/settings.png" alt="Menagerie Settings" width="880">
-</p>
-
-- **Startup at Login**: Automatic configuration for **niri** (`include "menagerie.kdl"` with validation), **Hyprland** (`source` line), and **KDE Plasma** / XDG autostart.
-- **Engine Options**: Mascot scale divisors and physics adjustments, read back live from the engine.
-- **Crash Resilient**: Actively monitors the overlay process; if `wl_shimeji` stops, Menagerie alerts you and restores the crowd.
-- **Tray Icon**: Control the screen without keeping a window open.
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="docs/img/catalog.png"><img src="docs/img/catalog.png" alt="Catalog"></a>
+      <h3>Catalog</h3>
+      Two built-in sources (<code>shimejis.xyz</code> and <code>cachomon.com</code>), live animated previews on hover, fuzzy search across everything, and batch installation.
+    </td>
+    <td width="50%" valign="top">
+      <a href="docs/img/scene.png"><img src="docs/img/scene.png" alt="Scene & Presets"></a>
+      <h3>Scene & Presets</h3>
+      Active mascot management powered by <code>wl_shimeji</code> via <code>wlr-layer-shell</code>. Real window physics, climbable borders, and one-click crowd presets.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="docs/img/collection.png"><img src="docs/img/collection.png" alt="Collection"></a>
+      <h3>Collection</h3>
+      Local mascot library grouped by universe with favorites, sorting, and multi-selection. Drop any Shimeji <code>.zip</code> archive on the window to install.
+    </td>
+    <td width="50%" valign="top">
+      <a href="docs/img/settings.png"><img src="docs/img/settings.png" alt="Settings & Startup"></a>
+      <h3>Settings & Startup</h3>
+      Automatic login autostart setup for <b>niri</b>, <b>Hyprland</b>, and <b>KDE Plasma</b>. Engine scale tuning, process monitoring, and instant crash recovery.
+    </td>
+  </tr>
+</table>
 
 ## Compositor Support
 

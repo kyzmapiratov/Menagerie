@@ -151,12 +151,11 @@ black window, or `EGL` errors in the terminal). If it does, start it with
 Two packages for the AUR, both in [`packaging/arch/`](../packaging/arch):
 
 ```bash
-yay -S menagerie-bin     # the prebuilt release: seconds
-yay -S menagerie         # builds it from source
+yay -S menagerie-bin     # prebuilt release (coming soon to AUR)
+yay -S menagerie         # builds from source (coming soon to AUR)
 ```
 
-Both depend on `wl_shimeji-git`, so the engine comes with them. `libayatana-appindicator` is optional: it is only for the tray icon. Until they are published, build the
-package from a clone: `cd packaging/arch/menagerie-bin && makepkg -si`.
+Both depend on `wl_shimeji-git`, so the engine comes with them. `libayatana-appindicator` is optional: it is only for the tray icon. While new AUR account registration is paused upstream, install via `./install.sh` or build locally from a clone: `cd packaging/arch/menagerie-bin && makepkg -si`.
 
 ## The engine (wl_shimeji)
 

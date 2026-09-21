@@ -43,7 +43,7 @@ Or install using your distribution's package / archive:
 
 | System | Command / Package |
 |---|---|
-| **Arch Linux**, CachyOS, EndeavourOS, Manjaro… | `./install.sh` or build locally via `packaging/arch/menagerie-bin` (`makepkg -si`) |
+| **Arch Linux**, CachyOS, EndeavourOS, Manjaro… | `yay -S menagerie-bin` *(AUR coming soon)* · `./install.sh` or local `makepkg -si` |
 | **Debian, Ubuntu, Mint, Pop!_OS…** | `sudo apt install ./menagerie_*.deb` from the [latest release](https://github.com/kyzmapiratov/Menagerie/releases/latest) |
 | **Fedora**, openSUSE… | `sudo dnf install ./menagerie-*.rpm` (`zypper install` on openSUSE) |
 | **Anything else** | The `.AppImage` from the release, or `./install.sh --source` to build it |

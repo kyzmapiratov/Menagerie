@@ -57,7 +57,8 @@ run it.
 | | Status |
 |---|---|
 | **Arch Linux** | The one it is developed and tested on, by hand. |
-| Debian 12, Ubuntu 24.04, Fedora, openSUSE Tumbleweed | The installer's package names and the engine's build are checked by CI on each of them, in a container. Nobody has yet used the app on a full desktop of those; reports welcome. |
+| Debian 13, Ubuntu 24.04, Fedora, openSUSE Tumbleweed | The installer's package names and the engine's build are checked by CI on each of them, in a container. Nobody has yet used the app on a full desktop of those; reports welcome. |
+| Debian 12 | The app (the `.deb`) runs. The *engine* cannot be built from source there as it is: it needs `wayland-protocols` 1.32 or newer and Debian 12 has 1.31. Install a newer `wayland-protocols` first, or use Debian 13. |
 | Arch derivatives (CachyOS, EndeavourOS, Manjaro…) | Same packages as Arch, so it should just work. |
 | NixOS | No package yet. The engine has a flake; a `flake.nix` for the app would be a very welcome contribution. |
 | Image-based (Silverblue, Bazzite, SteamOS) | Untested. See [Image-based systems](#image-based-systems-silverblue-kinoite-bazzite-steamos). |

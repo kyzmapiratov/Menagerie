@@ -1,0 +1,72 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "__nav('catalog'); await __wait(700); document.querySelector('#source-tabs [data-source=cacho]').click(); await __wait(1300);",
+    "window.__archiveNames = ['Mochi', 'Some Newcomer']; window.__pickPath = '/x/all.zip'; window.__installArgs = null;",
+    "document.getElementById('cacho-pick').click(); await __wait(900);",
+    "const tags = [...document.querySelectorAll('#m-list .pick')].map((l) => l.textContent.trim());",
+    "document.getElementById('m-all').click(); await __wait(200);",
+    "const ticked = [...document.querySelectorAll('#m-list input:checked')].map((i) => i.value);",
+    "document.getElementById('m-install').click(); await __wait(900);",
+    "return { tags, ticked, sent: window.__installArgs && window.__installArgs.selection, toast: [...document.querySelectorAll('.toast')].map((t) => t.textContent).join(' | ') };"
+   ],
+   "label": "replacing from an archive leaves alone a character that is on screen, and says so",
+   "expect": {
+    "ticked": [
+     "Mochi",
+     "Some Newcomer"
+    ],
+    "sent": [
+     "Some Newcomer"
+    ],
+    "toast": {
+     "re": "Left 1 character as it is: on screen now"
+    }
+   }
+  },
+  {
+   "js": [
+    "window.__installSaid = 'Installed 1 of 2\\nBroken.wlshm: not a wl_shimeji prototype'; window.__archiveNames = ['Someone Else', 'Broken'];",
+    "document.getElementById('cacho-pick').click(); await __wait(900);",
+    "// both are new, so both are ticked already",
+    "document.getElementById('m-install').click(); await __wait(900);",
+    "const t = document.getElementById('toast');",
+    "return { says: t.textContent, asError: t.classList.contains('error') };"
+   ],
+   "label": "an import that only partly went in is shown as a problem, with the lines that say which",
+   "expect": {
+    "says": {
+     "re": "Installed 1 of 2\\nBroken.wlshm: not a wl_shimeji prototype"
+    },
+    "asError": true
+   }
+  },
+  {
+   "js": [
+    "window.__installSaid = null; window.__archiveAdds = true; window.__archiveNames = ['Trash Test']; window.__pickPath = '/x/dl/Trash Test.zip'; window.__trashed = [];",
+    "document.getElementById('cacho-pick').click(); await __wait(900);",
+    "document.getElementById('m-install').click();",
+    "const seen = new Set(); for (let i = 0; i < 24; i++) { await __wait(100); const t = document.getElementById('toast'); if (!t.classList.contains('hidden')) seen.add(t.textContent); }",
+    "const t = document.getElementById('toast');",
+    "return { messages: [...seen].length, text: t.textContent, asError: t.classList.contains('error'), trashed: window.__trashed };"
+   ],
+   "label": "installing then trashing the .zip is ONE message that says the .zip went to the Trash, not two that replace each other",
+   "expect": {
+    "messages": 1,
+    "text": {
+     "re": "^Installed: Some Newcomer\\nThe \\.zip was moved to the Trash"
+    },
+    "asError": false,
+    "trashed": [
+     "/x/dl/Trash Test.zip"
+    ]
+   }
+  }
+ ]
+}

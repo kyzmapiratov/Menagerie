@@ -1,0 +1,39 @@
+[package]
+name = "menagerie"
+version = "1.0.0"
+description = "Browse, install and summon Shimeji characters for wl_shimeji on Wayland"
+license = "MIT"
+repository = "https://github.com/kyzmapiratov/Menagerie"
+edition = "2021"
+# The oldest compiler the locked dependencies build with (`time`, `image` and others ask
+# for 1.88). Distribution packages of Rust are often older: install.sh offers rustup.
+rust-version = "1.88"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset", "tray-icon"] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json"] }
+scraper = "0.20"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+futures = "0.3"
+png = "0.18"
+
+[[bin]]
+name = "menagerie"
+path = "src/main.rs"
+
+# A release build is what people install, so it is tuned for size and for startup: about
+# a third of the default build, and it is done once. Panics stay unwinding on purpose:
+# a bug in one command should fail that command, not close the whole window.
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = "s"
+strip = true

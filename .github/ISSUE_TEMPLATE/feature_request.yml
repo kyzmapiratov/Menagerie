@@ -1,0 +1,15 @@
+name: Idea or request
+description: Something the app could do, or do better
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like
+      description: The problem you have first, then what you imagine. Screenshots or sketches are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you do today instead

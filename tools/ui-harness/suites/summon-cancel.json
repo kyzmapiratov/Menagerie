@@ -1,0 +1,24 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "__nav('scene'); await __wait(800);",
+    "window.__errorsBefore = document.querySelectorAll('.toast.error').length;",
+    "document.getElementById('random-summon').click(); await __wait(250);",
+    "document.getElementById('dismiss-all').click(); await __wait(900);",
+    "return {cancelCalls: window.__cancelled || 0, stillSummoning: !!window.__summoning, redToasts: [...document.querySelectorAll('.toast.error')].map((t) => t.textContent)};"
+   ],
+   "label": "Dismiss all during a summon stops it, quietly",
+   "expect": {
+    "cancelCalls": 1,
+    "stillSummoning": false,
+    "redToasts": []
+   }
+  }
+ ]
+}

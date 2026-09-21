@@ -1,0 +1,156 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": "window.__fhInit(); return 1;"
+  },
+  {
+   "js": [
+    "await __wait(1500); __nav('mine'); await __wait(800);",
+    "const $ = (s) => document.querySelector(s);",
+    "const r = (el) => { const b = el.getBoundingClientRect(); return [Math.round(b.left*10)/10, Math.round(b.top*10)/10, Math.round(b.width*10)/10, Math.round(b.height*10)/10]; };",
+    "const snap = () => ({ title: r($('#view-mine .page-title')), note: r($('#mine-note')), search: r($('#mine-search')), seg: r($('#mine-sort')), groups: r($('#mine-group')), fav: r($('#filter-fav')), exp: r($('#export-all')), mainW: $('main').clientWidth, gutter: $('main').offsetWidth - $('main').clientWidth });",
+    "const diff = (a, b) => Object.keys(a).filter(k => JSON.stringify(a[k]) !== JSON.stringify(b[k])).map(k => k + ' ' + JSON.stringify(a[k]) + '->' + JSON.stringify(b[k]));",
+    "const base = snap(); const out = {};",
+    "const step = async (name, fn) => { await fn(); await __wait(300); out[name] = diff(base, snap()); };",
+    "const before = [...document.querySelectorAll('#mine .char')];",
+    "await step('favorites on', () => $('#filter-fav').click());",
+    "out.favCards = document.querySelectorAll('#mine .char').length;",
+    "await step('favorites off', () => $('#filter-fav').click());",
+    "await step('groups off', () => $('#mine-group').click());",
+    "await step('groups on', () => $('#mine-group').click());",
+    "await step('sort a-z', () => $('#mine-sort [data-sort=name]').click());",
+    "await step('sort new', () => $('#mine-sort [data-sort=new]').click());",
+    "await step('search zzz', () => { const s = $('#mine-search'); s.value = 'zzz'; s.dispatchEvent(new Event('input')); });",
+    "await step('search cleared', () => { const s = $('#mine-search'); s.value = ''; s.dispatchEvent(new Event('input')); });",
+    "const after = [...document.querySelectorAll('#mine .char')];",
+    "out.sameNodesAfterAll = before.filter(c => after.includes(c)).length + '/' + before.length;",
+    "// switching views: the page must not move sideways",
+    "const pos = {}; for (const v of ['catalog', 'mine', 'scene', 'settings']) { __nav(v); await __wait(250); const pg = $('.view.active .page').getBoundingClientRect(); pos[v] = [Math.round(pg.left), Math.round(pg.width), $('main').offsetWidth - $('main').clientWidth]; }",
+    "out.pagePos = pos;",
+    "// a card's size must not change when it is pointed at",
+    "__nav('mine'); await __wait(300);",
+    "const card = $('#mine .char'); const b0 = r(card); card.classList.add('fh'); await __wait(250); out.hoverCardMoved = JSON.stringify(b0) !== JSON.stringify(r(card));",
+    "out.errors = window.__errors;",
+    "return out;"
+   ],
+   "label": "toggling filters, sort and search moves no control; switching pages moves nothing sideways; a hovered card keeps its size",
+   "expect": {
+    "favorites on": [],
+    "favorites off": [],
+    "groups off": [],
+    "groups on": [],
+    "sort a-z": [],
+    "sort new": [],
+    "search zzz": [],
+    "search cleared": [],
+    "hoverCardMoved": false,
+    "errors": []
+   }
+  },
+  {
+   "size": [
+    900,
+    700
+   ]
+  },
+  {
+   "js": [
+    "__nav('catalog'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'catalog', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "catalog: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  },
+  {
+   "js": [
+    "__nav('mine'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'mine', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "mine: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  },
+  {
+   "js": [
+    "__nav('scene'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'scene', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "scene: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  },
+  {
+   "js": [
+    "__nav('settings'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'settings', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "settings: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  },
+  {
+   "size": [
+    1400,
+    900
+   ]
+  },
+  {
+   "js": [
+    "__nav('catalog'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'catalog', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "catalog: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  },
+  {
+   "js": [
+    "__nav('mine'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'mine', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "mine: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  },
+  {
+   "js": [
+    "__nav('scene'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'scene', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "scene: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  },
+  {
+   "js": [
+    "__nav('settings'); await __wait(450);",
+    "const m = document.querySelector('main');",
+    "return {view: 'settings', hOverflow: m.scrollWidth > m.clientWidth};"
+   ],
+   "label": "settings: no sideways scroll",
+   "expect": {
+    "hOverflow": false
+   }
+  }
+ ]
+}

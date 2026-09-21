@@ -1,0 +1,40 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "window.__lat = {fetch_packs: 3000}; document.querySelector('[data-view=\"catalog\"]').click(); await __wait(300);",
+    "document.getElementById('reload-catalog').click(); await __wait(500);",
+    "const p = document.getElementById('packs');",
+    "return {placeholders: p.querySelectorAll('.skel').length, realCards: p.querySelectorAll('.pack').length, buttonBusy: document.getElementById('reload-catalog').classList.contains('busy')};"
+   ],
+   "label": "a refresh keeps what is on screen and shows the wait on the button",
+   "expect": {
+    "placeholders": 0,
+    "realCards": {
+     "min": 5
+    },
+    "buttonBusy": true
+   }
+  },
+  {
+   "js": [
+    "await __wait(3200); document.getElementById('packs').replaceChildren();",
+    "document.getElementById('reload-catalog').click(); await __wait(600);",
+    "const sk = [...document.querySelectorAll('#packs .skel')]; const last = sk[sk.length - 1].getBoundingClientRect();",
+    "return {count: sk.length, reachesBottom: last.bottom >= window.innerHeight - 60};"
+   ],
+   "label": "an empty page is filled with placeholders down to the bottom of the window",
+   "expect": {
+    "count": {
+     "min": 6
+    },
+    "reachesBottom": true
+   }
+  }
+ ]
+}

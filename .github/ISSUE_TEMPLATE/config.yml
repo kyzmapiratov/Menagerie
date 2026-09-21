@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Troubleshooting guide
+    url: https://github.com/kyzmapiratov/Menagerie/blob/main/docs/troubleshooting.md
+    about: Nothing appears, the overlay crashed, the window is blank — the usual causes are listed here.
+  - name: wl_shimeji (the engine)
+    url: https://github.com/CluelessCatBurger/wl_shimeji/issues
+    about: If a character misbehaves once it is on screen (movement, actions), that is the engine's business.

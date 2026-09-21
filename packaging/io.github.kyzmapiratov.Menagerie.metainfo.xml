@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.kyzmapiratov.Menagerie</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Menagerie</name>
+  <summary>Browse, install and summon Shimeji characters</summary>
+  <developer id="io.github.kyzmapiratov">
+    <name>Menagerie contributors</name>
+  </developer>
+  <description>
+    <p>
+      Shimeji are the little mascots that walk around your screen, climb your windows and
+      throw themselves off the edges. Menagerie is a front end for wl_shimeji, the
+      Wayland engine that draws them.
+    </p>
+    <ul>
+      <li>A catalog of a few thousand characters with animated previews and one-click install</li>
+      <li>A collection view with favorites, groups and export</li>
+      <li>A scene with presets, and a way to bring back everyone if the overlay stops</li>
+      <li>Start at login, with a random selection if you like</li>
+    </ul>
+    <p>The engine, wl_shimeji, is a separate program and has to be installed as well.</p>
+  </description>
+  <launchable type="desktop-id">menagerie.desktop</launchable>
+  <url type="homepage">https://github.com/kyzmapiratov/Menagerie</url>
+  <url type="bugtracker">https://github.com/kyzmapiratov/Menagerie/issues</url>
+  <provides>
+    <binary>menagerie</binary>
+  </provides>
+  <categories>
+    <category>Utility</category>
+  </categories>
+  <keywords>
+    <keyword>shimeji</keyword>
+    <keyword>mascot</keyword>
+    <keyword>wayland</keyword>
+  </keywords>
+  <content_rating type="oars-1.1"/>
+  <requires>
+    <display_length compare="ge">720</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  <releases>
+    <release version="1.0.0" date="2026-09-21"/>
+  </releases>
+</component>

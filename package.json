@@ -1,0 +1,27 @@
+{
+  "name": "menagerie",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Browse, install and summon Shimeji characters for wl_shimeji on Wayland",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyzmapiratov/Menagerie.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-dialog": "^2",
+    "@tauri-apps/plugin-clipboard-manager": "^2"
+  }
+}

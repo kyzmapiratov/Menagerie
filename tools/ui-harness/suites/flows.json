@@ -1,0 +1,66 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": "window.__fhInit(); return 1;"
+  },
+  {
+   "js": [
+    "const $ = (s) => document.querySelector(s); const out = {};",
+    "await __wait(1500);",
+    "// --- selection bar in the Collection",
+    "__nav('mine'); await __wait(700);",
+    "const dots = [...document.querySelectorAll('#mine .char .sel-dot')].slice(0, 3);",
+    "dots.forEach(d => d.click()); await __wait(200);",
+    "out.selbar = { visible: !$('#selbar').classList.contains('hidden'), count: $('#selbar-count').textContent, buttons: [...document.querySelectorAll('#selbar-actions button')].map(b => b.textContent) };",
+    "__lat.summon_mascot = 900;",
+    "$('#selbar-actions .btn').click(); await __wait(250);",
+    "out.selbarWhileSummoning = !$('#selbar').classList.contains('hidden'); // it stays, with the spinner on Summon, until the characters are there",
+    "await __wait(3500);",
+    "out.selbarAfterSummon = $('#selbar').classList.contains('hidden');",
+    "out.summonToast = document.getElementById('toast').textContent;",
+    "// --- delete through the bar: confirm dialog appears, cancel keeps everything",
+    "dots.length && document.querySelectorAll('#mine .char .sel-dot')[0].click(); await __wait(150);",
+    "[...document.querySelectorAll('#selbar-actions button')].find(b => b.textContent === 'Delete').click(); await __wait(250);",
+    "out.confirmShown = !$('#confirm').classList.contains('hidden');",
+    "$('#confirm-no').click(); await __wait(200);",
+    "out.cardsStill = document.querySelectorAll('#mine .char').length;",
+    "document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); await __wait(150);",
+    "// --- local archive: sheet opens",
+    "window.__downloads = [{path:'/x/a.zip', name:'a.zip', size_mb:1.1, age_secs:500, characters:['Some Newcomer'], installed:false, looks_like_shimeji:true}];",
+    "__nav('catalog'); document.querySelector('#source-tabs [data-source=cacho]').click(); await __wait(1500);",
+    "$('#cacho-downloads .btn').click(); await __wait(900);",
+    "out.sheet = { open: !$('#modal').classList.contains('hidden'), title: $('#m-name').textContent, items: document.querySelectorAll('#m-list .pick').length, installLabel: $('#m-install').textContent };",
+    "$('#m-close').click(); await __wait(200);",
+    "// --- install panel",
+    "__emit('install-progress', { key: 'k1', name: 'Newcomer One', index: 0, total: 1, stage: 'done', fraction: 1, message: 'Done' });",
+    "await __wait(300);",
+    "const sm = document.querySelector('#dock-list .link-btn'); out.dock = { visible: !$('#dock').classList.contains('hidden'), summonBtn: sm && sm.textContent, footLink: $('#dock-collection').textContent };",
+    "sm.click(); await __wait(400); out.dockAfter = sm.textContent;",
+    "$('#dock-collection').click(); await __wait(900); out.wentTo = document.querySelector('.nav.active').dataset.view;",
+    "out.errors = window.__errs || 'n/a';",
+    "return out;"
+   ],
+   "label": "select, summon, delete-with-confirmation, install from an archive, the install panel",
+   "expect": {
+    "selbar": {
+     "visible": true,
+     "count": "3 selected",
+     "buttons": [
+      "Summon",
+      "Export",
+      "Delete"
+     ]
+    },
+    "selbarAfterSummon": true,
+    "summonToast": "Summoned 3",
+    "confirmShown": true,
+    "selbarWhileSummoning": true
+   }
+  }
+ ]
+}

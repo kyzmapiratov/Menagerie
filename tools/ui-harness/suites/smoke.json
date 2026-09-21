@@ -1,0 +1,23 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "await __wait(600);",
+    "return {title: document.title, packs: document.querySelectorAll('.pack').length, errors: window.__errors};"
+   ],
+   "label": "the page boots, shows the catalog and throws nothing",
+   "expect": {
+    "title": "Menagerie",
+    "packs": {
+     "min": 5
+    },
+    "errors": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,51 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "const frames = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));",
+    "const out = {};",
+    "document.querySelector('#source-tabs [data-source=xyz]').click(); await __wait(1600);",
+    "const pack = [...document.querySelectorAll('.pack')].find(p => p.querySelector('.pack-name').textContent === 'Open uploads');",
+    "let t = performance.now(); pack.click();",
+    "await new Promise(r => { const check = () => document.querySelectorAll('#chars .char').length > 20 ? r() : setTimeout(check, 10); check(); });",
+    "await frames(); out.openPackMs = Math.round(performance.now() - t);",
+    "out.cardsInDom = document.querySelectorAll('#chars .char').length;",
+    "await __wait(1500);   // let images settle",
+    "// first selection",
+    "const dot = document.querySelector('#chars .char .sel-dot');",
+    "t = performance.now(); dot.click(); await frames(); out.firstSelectMs = Math.round(performance.now() - t);",
+    "// second selection (already in selecting mode)",
+    "const dot2 = document.querySelectorAll('#chars .char .sel-dot')[3];",
+    "t = performance.now(); dot2.click(); await frames(); out.secondSelectMs = Math.round(performance.now() - t);",
+    "// select all",
+    "t = performance.now(); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', ctrlKey: true })); await frames(); out.selectAllMs = Math.round(performance.now() - t);",
+    "out.selectedText = document.getElementById('selbar-count').textContent;",
+    "return out;"
+   ],
+   "label": "opening the biggest pack and selecting in it is quick",
+   "expect": {
+    "openPackMs": {
+     "max": 800
+    },
+    "cardsInDom": {
+     "max": 200
+    },
+    "firstSelectMs": {
+     "max": 250
+    },
+    "secondSelectMs": {
+     "max": 250
+    },
+    "selectAllMs": {
+     "max": 400
+    },
+    "selectedText": "2337 selected"
+   }
+  }
+ ]
+}

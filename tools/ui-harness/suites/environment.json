@@ -1,0 +1,84 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "const m = await import('/environment.js');",
+    "const ok = {layer_shell: true, subcompositor: true, alpha_modifier: false, viewporter: true};",
+    "const cases = {",
+    "  engine: {engine: null, session: 'wayland', desktop: 'niri', family: 'debian', protocols: ok},",
+    "  x11: {engine: '/x', session: 'x11', desktop: 'XFCE', family: 'arch'},",
+    "  noLayer: {engine: '/x', session: 'wayland', desktop: 'ubuntu:GNOME', family: 'debian', protocols: {...ok, layer_shell: false}},",
+    "  gnomeExtension: {engine: '/x', session: 'wayland', desktop: 'ubuntu:GNOME', family: 'debian', protocols: ok},",
+    "  unknownNoLayer: {engine: '/x', session: 'wayland', desktop: 'SomeWM', family: 'arch', protocols: {...ok, layer_shell: false}},",
+    "  noSubcompositor: {engine: '/x', session: 'wayland', desktop: 'gamescope', family: 'arch', protocols: {...ok, subcompositor: false}},",
+    "  hyprland: {engine: '/x', session: 'wayland', desktop: 'Hyprland', family: 'arch', protocols: ok},",
+    "  niri: {engine: '/x', session: 'wayland', desktop: 'niri', family: 'arch', protocols: ok},",
+    "  gnomeUnasked: {engine: '/x', session: 'wayland', desktop: 'GNOME', family: 'debian'},",
+    "};",
+    "const out = {};",
+    "for (const [k, v] of Object.entries(cases)) { const d = m.diagnose(v); out[k] = d ? d.kind : null; }",
+    "return out;"
+   ],
+   "label": "what is wrong is decided by the compositor's protocols, not its name",
+   "expect": {
+    "engine": "engine",
+    "x11": "x11",
+    "noLayer": "no-layer-shell",
+    "gnomeExtension": null,
+    "unknownNoLayer": "no-layer-shell",
+    "noSubcompositor": "no-subcompositor",
+    "hyprland": "hyprland",
+    "niri": null,
+    "gnomeUnasked": "gnome"
+   }
+  },
+  {
+   "js": [
+    "window.__env = {engine: null, session: 'wayland', desktop: 'niri', family: 'debian'};",
+    "const m = await import('/environment.js'); await m.checkEnvironment(() => { window.__fixed = true; });",
+    "const b = document.getElementById('env-alert');",
+    "const buttons = () => [...b.querySelectorAll('button')].map((x) => x.textContent);",
+    "const before = {shown: !b.classList.contains('hidden'), title: b.querySelector('.alert-title').textContent, buttons: buttons()};",
+    "[...b.querySelectorAll('button')].find((x) => x.textContent === 'Show how').click();",
+    "return {...before, commandsShown: !b.querySelector('pre').classList.contains('hidden'), lines: b.querySelector('pre').textContent.split('\\n').length};"
+   ],
+   "label": "a missing engine gets a card with the commands for the distribution",
+   "expect": {
+    "shown": true,
+    "title": "wl_shimeji is not installed",
+    "buttons": {
+     "has": "Copy commands"
+    },
+    "commandsShown": true,
+    "lines": {
+     "min": 3
+    }
+   }
+  },
+  {
+   "js": [
+    "[...document.querySelectorAll('#env-alert button')].find((x) => x.textContent === 'Check again').click(); await __wait(400);",
+    "const still = {hidden: document.getElementById('env-alert').classList.contains('hidden'), fixed: !!window.__fixed};",
+    "window.__env = {engine: '/home/x/.local/bin/shimejictl', session: 'wayland', desktop: 'niri', family: 'debian'};",
+    "[...document.querySelectorAll('#env-alert button')].find((x) => x.textContent === 'Check again').click(); await __wait(500);",
+    "return {stillMissing: still, afterInstall: {hidden: document.getElementById('env-alert').classList.contains('hidden'), fixed: !!window.__fixed}};"
+   ],
+   "label": "Check again keeps the card while it is missing, and clears it once it is found",
+   "expect": {
+    "stillMissing": {
+     "hidden": false,
+     "fixed": false
+    },
+    "afterInstall": {
+     "hidden": true,
+     "fixed": true
+    }
+   }
+  }
+ ]
+}

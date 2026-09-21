@@ -1,0 +1,78 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "__nav('catalog'); await __wait(1300);",
+    "const count = (c) => window.__calls.filter((x) => x === c).length;",
+    "const p0 = count('fetch_packs'); window.__indexRefreshes = 0;",
+    "window.__latAll = 250; const btn = document.getElementById('reload-catalog'); btn.click(); await __wait(200);",
+    "const waiting = btn.classList.contains('wait');",
+    "const view = document.querySelector('.view.active');",
+    "const spinners = view.querySelectorAll('.spin, .wm').length, inNote = document.querySelectorAll('#catalog-note .spin').length, textNow = document.getElementById('catalog-note').textContent;",
+    "await __wait(2200); window.__latAll = 0; await __wait(400);",
+    "return { waitedWhileWorking: waiting, oneSpinnerOnly: spinners === 1 && inNote === 0, noteStillSaysWhat: /Loading the catalog|Updating the search index/.test(textNow), packsFetched: count('fetch_packs') - p0, indexRenewed: window.__indexRefreshes, note: document.getElementById('catalog-note').textContent, idleAgain: !btn.classList.contains('wait') && !btn.classList.contains('busy') };"
+   ],
+   "label": "the reload renews the pack list and the search index, keeps waiting until both are done, with one spinner and not two",
+   "expect": {
+    "waitedWhileWorking": true,
+    "oneSpinnerOnly": true,
+    "noteStillSaysWhat": true,
+    "packsFetched": 1,
+    "indexRenewed": 1,
+    "note": {
+     "re": "^[0-9]+ packs$"
+    },
+    "idleAgain": true
+   }
+  },
+  {
+   "js": [
+    "const count = (c) => window.__calls.filter((x) => x === c).length;",
+    "document.querySelector('#packs .pack').click(); await __wait(1200);",
+    "const c0 = count('fetch_characters'); const i0 = window.__indexRefreshes;",
+    "document.getElementById('reload-catalog').click(); await __wait(1200);",
+    "return { charactersFetchedAgain: count('fetch_characters') - c0, indexLeftAlone: window.__indexRefreshes === i0, stillInThePack: !document.getElementById('chars').classList.contains('hidden') };"
+   ],
+   "label": "inside a pack the reload renews that pack and stays in it",
+   "expect": {
+    "charactersFetchedAgain": 1,
+    "indexLeftAlone": true,
+    "stillInThePack": true
+   }
+  },
+  {
+   "js": [
+    "const count = (c) => window.__calls.filter((x) => x === c).length;",
+    "window.__failNext.catalog_index = 1; document.querySelector('#crumb-root').click(); await __wait(1200);",
+    "const p0 = count('fetch_packs'); window.__failNext.catalog_index = 1;",
+    "document.getElementById('reload-catalog').click(); await __wait(1500);",
+    "const note = document.getElementById('catalog-note');",
+    "return { listStillShown: document.querySelectorAll('#packs .pack').length > 0, saysWhatFailed: /search index could not be updated/.test(note.textContent), asError: note.classList.contains('error') };"
+   ],
+   "label": "if the index cannot be renewed the list stays on screen and the note says what failed",
+   "expect": {
+    "listStillShown": true,
+    "saysWhatFailed": true,
+    "asError": true
+   }
+  },
+  {
+   "js": [
+    "__nav('catalog'); await __wait(600); document.getElementById('crumb-root').click(); await __wait(300);",
+    "window.__latAll = 600; document.querySelector('#packs .pack').click(); await __wait(200);",
+    "const own = document.querySelectorAll('#catalog-note .spin').length;",
+    "window.__latAll = 0; await __wait(1800);",
+    "return { spinnerInNoteWhenNothingElseShowsTheWait: own === 1 };"
+   ],
+   "label": "opening a pack (no spinning button) still shows the spinner in the status line",
+   "expect": {
+    "spinnerInNoteWhenNothingElseShowsTheWait": true
+   }
+  }
+ ]
+}

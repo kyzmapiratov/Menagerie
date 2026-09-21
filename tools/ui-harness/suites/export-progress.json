@@ -1,0 +1,107 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "__nav('mine'); await __wait(900);",
+    "window.__exportCount = 6; window.__exportStep = 300;",
+    "const btn = document.getElementById('export-all'); btn.click(); await __wait(700);",
+    "const dock = document.getElementById('dock'), rows = [...document.querySelectorAll('#dock-list .dock-row')];",
+    "const mid = { shown: !dock.classList.contains('hidden'), title: document.getElementById('dock-title').textContent, pct: parseInt(document.getElementById('dock-pct').textContent, 10),",
+    "  rows: rows.length, rowName: rows[0]?.querySelector('.dock-name')?.textContent, rowSays: rows[0]?.querySelector('.dock-msg')?.textContent,",
+    "  canCancel: !document.getElementById('dock-cancel').classList.contains('hidden'), buttonWaits: btn.classList.contains('wait') };",
+    "await __wait(2600);",
+    "const end = { title: document.getElementById('dock-title').textContent, footHidden: document.getElementById('dock-foot').classList.contains('hidden'),",
+    "  noSummonLink: !document.querySelector('#dock-list .link-btn'), cancelGone: document.getElementById('dock-cancel').classList.contains('hidden'),",
+    "  toast: [...document.querySelectorAll('.toast')].map((t) => t.textContent).join(' | '), buttonIdle: !btn.classList.contains('wait') };",
+    "return { mid, end };"
+   ],
+   "label": "an export shows a row that counts up in the progress panel and ends on \"Collection exported\"",
+   "expect": {
+    "mid": {
+     "shown": true,
+     "title": "Exporting the collection",
+     "pct": {
+      "min": 5,
+      "max": 95
+     },
+     "rows": 1,
+     "rowName": "Exporting your collection",
+     "rowSays": {
+      "re": "of 6$"
+     },
+     "canCancel": true,
+     "buttonWaits": true
+    },
+    "end": {
+     "title": "Collection exported",
+     "footHidden": true,
+     "noSummonLink": true,
+     "cancelGone": true,
+     "toast": {
+      "has": "Exported 6 characters"
+     },
+     "buttonIdle": true
+    }
+   }
+  },
+  {
+   "js": [
+    "document.getElementById('dock-close').click(); await __wait(300);",
+    "window.__exportCount = 10; window.__exportStep = 350;",
+    "const btn = document.getElementById('export-all'); btn.click(); await __wait(900);",
+    "document.getElementById('dock-cancel').click(); await __wait(1600);",
+    "return { title: document.getElementById('dock-title').textContent, buttonIdle: !btn.classList.contains('wait'),",
+    "  quiet: ![...document.querySelectorAll('.toast.error')].some((t) => /Export stopped/.test(t.textContent)), stoppedEarly: window.__exportCancelled === true };"
+   ],
+   "label": "Cancel in the panel stops an export quietly",
+   "expect": {
+    "title": "Export cancelled",
+    "buttonIdle": true,
+    "quiet": true,
+    "stoppedEarly": true
+   }
+  },
+  {
+   "js": [
+    "document.getElementById('dock-close')?.click(); await __wait(200);",
+    "__nav('mine'); await __wait(900);",
+    "[...document.querySelectorAll('#mine .sel-dot')].slice(0, 2).forEach((d) => d.click()); await __wait(300);",
+    "window.__exportStep = 150; window.__lastExport = null;",
+    "document.getElementById('export-all').click(); await __wait(450);",
+    "const header = { names: window.__lastExport?.names?.length, rowName: document.querySelector('#dock-list .dock-name')?.textContent };",
+    "await __wait(1200); document.getElementById('dock-close')?.click(); await __wait(200);",
+    "window.__lastExport = null;",
+    "[...document.querySelectorAll('#selbar-actions button')].find((b) => b.textContent.trim() === 'Export').click(); await __wait(450);",
+    "const bar = { names: window.__lastExport?.names?.length, selectionKept: document.getElementById('selbar-count').textContent };",
+    "await __wait(1200); document.getElementById('dock-close')?.click(); await __wait(200);",
+    "document.getElementById('selbar-clear').click(); await __wait(300); window.__lastExport = null;",
+    "document.getElementById('export-all').click(); await __wait(450);",
+    "const none = { names: window.__lastExport ? window.__lastExport.names : 'not called', rowName: document.querySelector('#dock-list .dock-name')?.textContent };",
+    "await __wait(3000);",
+    "return { header, bar, none };"
+   ],
+   "label": "Export follows the selection: only what is selected, from the button and from the bar; everything when nothing is",
+   "expect": {
+    "header": {
+     "names": 2,
+     "rowName": "Exporting 2 characters"
+    },
+    "bar": {
+     "names": 2,
+     "selectionKept": {
+      "re": "^2 selected"
+     }
+    },
+    "none": {
+     "names": null,
+     "rowName": "Exporting your collection"
+    }
+   }
+  }
+ ]
+}

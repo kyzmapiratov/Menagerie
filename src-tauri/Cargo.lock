@@ -2406,7 +2406,7 @@ dependencies = [
 
 [[package]]
 name = "menagerie"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "futures",
  "png 0.18.1",

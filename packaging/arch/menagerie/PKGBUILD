@@ -9,7 +9,7 @@
 # `menagerie-bin` next to this folder installs the prebuilt release instead.
 
 pkgname=menagerie
-pkgver=1.0.0
+pkgver=1.0.1
 pkgrel=1
 pkgdesc="Browse, install and summon Shimeji characters for wl_shimeji on Wayland"
 arch=('x86_64' 'aarch64')

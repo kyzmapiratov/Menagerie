@@ -1,6 +1,6 @@
 [package]
 name = "menagerie"
-version = "1.0.0"
+version = "1.0.1"
 description = "Browse, install and summon Shimeji characters for wl_shimeji on Wayland"
 license = "GPL-2.0-only"
 repository = "https://github.com/kyzmapiratov/Menagerie"

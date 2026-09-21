@@ -5,6 +5,8 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] — 2026-09-22
+
 - Added high-resolution visual showcase assets, documentation hero banner, and video walkthroughs.
 - Relicensed project under GNU General Public License v2 (`GPL-2.0-only`), aligning with `wl_shimeji`.
 - Removed `.github/CODE_OF_CONDUCT.md`.

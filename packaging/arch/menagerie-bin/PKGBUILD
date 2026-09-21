@@ -1,0 +1,30 @@
+# Maintainer: Your Name <you@example.com>
+#
+# Installs the prebuilt release: no compiler, a few seconds. For the build-it-yourself
+# version see ../menagerie. Test locally with: makepkg -si
+#
+# Fill in the maintainer line and run `updpkgsums` once the release is published.
+
+pkgname=menagerie-bin
+_name=menagerie
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Browse, install and summon Shimeji characters for wl_shimeji on Wayland (prebuilt)"
+arch=('x86_64' 'aarch64')
+url="https://github.com/kyzmapiratov/Menagerie"
+license=('MIT')
+depends=('webkit2gtk-4.1' 'gtk3' 'openssl' 'wl_shimeji-git')
+optdepends=('libayatana-appindicator: the tray icon (the app works without it)')
+provides=("$_name")
+conflicts=("$_name")
+
+_release="$url/releases/download/v$pkgver"
+source_x86_64=("$_name-$pkgver-x86_64.tar.gz::$_release/$_name-linux-x86_64.tar.gz")
+source_aarch64=("$_name-$pkgver-aarch64.tar.gz::$_release/$_name-linux-aarch64.tar.gz")
+sha256sums_x86_64=('SKIP')
+sha256sums_aarch64=('SKIP')
+
+package() {
+  # The tarball's top folder is <name>-<version>-linux-<arch>/ with bin/ and share/ inside.
+  cp -a "$srcdir/$_name-$pkgver-linux-$CARCH/." "$pkgdir/usr/"
+}

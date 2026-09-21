@@ -1,0 +1,118 @@
+name: Release
+
+# Push a tag such as v0.6.0 to publish a release. Run it by hand ("Run workflow") to try
+# the pipeline: everything is built and attached to the run, but nothing is published.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The oldest runner image that still has WebKitGTK 4.1: the binary then runs on
+          # every distribution that is at least as new.
+          - runner: ubuntu-22.04
+            arch: x86_64
+          - runner: ubuntu-22.04-arm
+            arch: aarch64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: The tag and the versions agree
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          cargo_v=$(sed -n 's/^version *= *"\(.*\)"/\1/p' src-tauri/Cargo.toml | head -1)
+          tauri_v=$(sed -n 's/.*"version": *"\(.*\)".*/\1/p' src-tauri/tauri.conf.json | head -1)
+          npm_v=$(sed -n 's/.*"version": *"\(.*\)".*/\1/p' package.json | head -1)
+          echo "tag $tag, Cargo $cargo_v, Tauri $tauri_v, npm $npm_v"
+          [ "$tag" = "$cargo_v" ] && [ "$tag" = "$tauri_v" ] && [ "$tag" = "$npm_v" ]
+
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev rpm
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci --no-audit --no-fund
+
+      # .deb and .rpm depend on the system's WebKitGTK; the AppImage carries its own.
+      # The tray icon needs an appindicator library, and Tauri writes the package that provides it
+      # into the dependencies. Without this switch it picks whichever it finds first on the build
+      # machine, and the older `libappindicator3-1` does not exist in Debian at all.
+      - name: Build the packages
+        run: npm run tauri build -- --bundles deb,rpm,appimage
+        env:
+          NO_STRIP: "true"
+          TAURI_LINUX_AYATANA_APPINDICATOR: "true"
+
+      # A package that asks for a library the distribution does not have cannot be installed there,
+      # and nothing on this side would notice. Read the dependencies back and refuse to publish.
+      - name: The packages ask for libraries that exist
+        run: |
+          bundle=src-tauri/target/release/bundle
+          deb=$(ls "$bundle"/deb/*.deb)
+          rpm=$(ls "$bundle"/rpm/*.rpm)
+          echo "deb needs: $(dpkg-deb -f "$deb" Depends)"
+          echo "rpm needs:"; rpm -qpR "$rpm" | grep -v '^rpmlib' | sed 's/^/  /'
+          if dpkg-deb -f "$deb" Depends | grep -q 'libappindicator3-1'; then
+            echo "::error::the .deb depends on libappindicator3-1, which current Debian releases do not have"; exit 1
+          fi
+          if rpm -qpR "$rpm" | grep -q '^libappindicator3'; then
+            echo "::error::the .rpm needs the old libappindicator3 where libayatana-appindicator3 was expected"; exit 1
+          fi
+
+      # The plain binary and its launcher files, for install.sh --binary and the -bin AUR package.
+      - name: Tarball for install.sh
+        run: packaging/make-tarball.sh src-tauri/target/release/menagerie dist
+
+      - name: Gather
+        run: |
+          bundle=src-tauri/target/release/bundle
+          cp "$bundle"/deb/*.deb "$bundle"/rpm/*.rpm "$bundle"/appimage/*.AppImage dist/
+          ls -lh dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.arch }}
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: dist
+          merge-multiple: true
+
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum -- * > SHA256SUMS && cat SHA256SUMS
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

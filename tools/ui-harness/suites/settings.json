@@ -1,0 +1,127 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "document.querySelector('[data-view=\"settings\"]').click(); document.querySelector('#settings-tabs [data-tab=\"general\"]').click(); await __wait(1100);",
+    "const names = [...document.querySelectorAll('#opts .opt-name')].map((x) => x.textContent);",
+    "return {shown: names, dead: names.filter((n) => ['Graphics tablet', 'Interact with windows', 'Global cursor position', 'Window throw policy'].includes(n))};"
+   ],
+   "label": "settings the engine never reads are not offered",
+   "expect": {
+    "dead": [],
+    "shown": {
+     "has": "Size"
+    }
+   }
+  },
+  {
+   "js": [
+    "const size = __opt('Size'), sl = size.querySelector('input');",
+    "const at = (sl.value - sl.min) / (sl.max - sl.min);",
+    "return {low: Math.round(Math.exp(sl.min) * 100) / 100, high: Math.round(Math.exp(sl.max) * 100) / 100, shown: size.querySelector('.opt-val').textContent, x1Position: Math.round(at * 100), defaultLink: !!size.querySelector('.link-btn.tiny')};"
+   ],
+   "label": "Size runs x0.5 to x4, the engine's -1 reads as x1 (not x-1), and x1 sits a third of the way in, not hard against the left end",
+   "expect": {
+    "low": 0.5,
+    "high": 4,
+    "shown": "x1",
+    "x1Position": {
+     "min": 30,
+     "max": 36
+    },
+    "defaultLink": false
+   }
+  },
+  {
+   "js": [
+    "const row = __opt('Size'), sl = row.querySelector('input');",
+    "sl.value = Math.log(3); sl.dispatchEvent(new Event('input')); sl.dispatchEvent(new Event('change')); await __wait(600);",
+    "const bigger = {shown: row.querySelector('.opt-val').textContent, sent: window.__config.MASCOT_SCALE};",
+    "sl.value = Math.log(0.5); sl.dispatchEvent(new Event('input')); sl.dispatchEvent(new Event('change')); await __wait(600);",
+    "return {bigger, smallest: {shown: row.querySelector('.opt-val').textContent, sent: window.__config.MASCOT_SCALE}};"
+   ],
+   "label": "the engine divides by its scale, so a bigger size sends a smaller number",
+   "expect": {
+    "bigger": {
+     "shown": "x3",
+     "sent": "0.333"
+    },
+    "smallest": {
+     "shown": "x0.5",
+     "sent": "2.000"
+    }
+   }
+  },
+  {
+   "js": [
+    "const row = __opt('See-through');",
+    "return {unavailable: row.classList.contains('unavailable'), why: row.querySelector('.opt-desc').textContent, shown: row.querySelector('.opt-val').textContent};"
+   ],
+   "label": "a setting the compositor cannot honour says so",
+   "expect": {
+    "unavailable": true,
+    "why": {
+     "has": "wp_alpha_modifier_v1"
+    },
+    "shown": "100%"
+   }
+  },
+  {
+   "js": [
+    "const rows = [...document.querySelectorAll('#opts .opt')].filter((r) => r.querySelector('input[type=range]'));",
+    "const left = (r) => Math.round(r.querySelector('input').getBoundingClientRect().left);",
+    "const smooth = __opt('Motion smoothing'), sl = smooth.querySelector('input'), seen = new Set();",
+    "for (const v of [-1, 0, 30, 53, 240]) { sl.value = v; sl.dispatchEvent(new Event('input')); seen.add(left(smooth) + ':' + Math.round(sl.getBoundingClientRect().width)); }",
+    "return {allSliderLefts: [...new Set(rows.map(left))], positionsWhileDragging: seen.size};"
+   ],
+   "label": "every slider has the same place and length, and does not move when its value changes",
+   "expect": {
+    "allSliderLefts": {
+     "every": {
+      "min": 1
+     }
+    },
+    "positionsWhileDragging": 1
+   }
+  },
+  {
+   "js": [
+    "const lefts = [...document.querySelectorAll('#opts .opt')].filter((r) => r.querySelector('input[type=range]')).map((r) => Math.round(r.querySelector('input').getBoundingClientRect().left));",
+    "return {distinct: new Set(lefts).size};"
+   ],
+   "label": "\u2026and it is the same place for all of them",
+   "expect": {
+    "distinct": 1
+   }
+  },
+  {
+   "js": [
+    "document.querySelector('.opts-more').click(); await __wait(900);",
+    "const rows = [...document.querySelectorAll('#opts .opt')].filter((r) => /^(Mouse|Stylus):/.test(r.querySelector('.opt-name')?.textContent || ''));",
+    "return {count: rows.length, choices: [...rows[0].querySelectorAll('.seg-btn')].map((b) => b.textContent), raw: rows.filter((r) => r.querySelector('input.field')).length};"
+   ],
+   "label": "the mouse and stylus keys offer named choices, not a box for a number",
+   "expect": {
+    "count": 14,
+    "choices": [
+     "Drag",
+     "Right-click",
+     "Middle-click"
+    ],
+    "raw": 0
+   }
+  },
+  {
+   "js": "return {errors: window.__errors};",
+   "label": "no page errors",
+   "expect": {
+    "errors": []
+   }
+  }
+ ]
+}

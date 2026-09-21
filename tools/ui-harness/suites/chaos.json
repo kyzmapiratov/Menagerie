@@ -1,0 +1,62 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "await __wait(1800);",
+    "const cards = () => document.querySelectorAll('#mine .char').length;",
+    "const baseline = cards();",
+    "// The scene is read once while everything works: the point is that failures afterwards do not blank what is known.",
+    "__nav('scene'); await __wait(1300); __nav('mine'); await __wait(400);",
+    "const out = { baseline, minCards: 999, minTiles: 999, falseNobody: 0, minLineup: 999, emptySelect: 0, samples: 0 };",
+    "await fetch('/__chaos?sprite=0.3');",
+    "__chaos.listEmpty = 0.5; __chaos.listFail = 0.25; __chaos.sceneFail = 0.5;",
+    "const views = ['mine', 'scene', 'settings', 'catalog'];",
+    "for (let i = 0; i < 40; i++) {",
+    "  __nav(views[i % 4]);",
+    "  if (views[i % 4] === 'settings') document.querySelector('#settings-tabs [data-tab=startup]').click();",
+    "  window.dispatchEvent(new Event('focus'));",
+    "  await __wait(520);",
+    "  out.samples++;",
+    "  out.minCards = Math.min(out.minCards, cards());",
+    "  if (views[i % 4] === 'scene') { out.minTiles = Math.min(out.minTiles, document.querySelectorAll('#active-list .tile').length); if (document.querySelector('.scene-empty')) out.falseNobody++; }",
+    "  if (views[i % 4] === 'settings') {",
+    "    out.minLineup = Math.min(out.minLineup, document.querySelectorAll('.lineup-card').length);",
+    "    const sel = document.querySelector('.bind select'); if (sel && (sel.value === '' || !sel.value)) out.emptySelect++;",
+    "  }",
+    "}",
+    "// chaos off: everything must settle to the full, correct state",
+    "__chaos.listEmpty = 0; __chaos.listFail = 0; __chaos.sceneFail = 0; await fetch('/__chaos?sprite=0');",
+    "window.dispatchEvent(new Event('focus')); await __wait(2500);",
+    "const stages = [...document.querySelectorAll('#mine .char .stage')];",
+    "out.finalCards = cards();",
+    "out.stagesWithPicture = stages.filter(s => { const i = s.querySelector('img'); return i && i.style.display !== 'none' && i.naturalWidth > 0; }).length;",
+    "out.stagesWithLetter = stages.filter(s => s.querySelector('.ph')).length;",
+    "out.stagesEmpty = stages.filter(s => !s.querySelector('img') && !s.querySelector('.ph')).length;",
+    "out.errors = window.__errors;",
+    "return out;"
+   ],
+   "label": "40 tab switches while half the answers fail: nothing empties, nothing is falsely empty",
+   "expect": {
+    "falseNobody": 0,
+    "emptySelect": 0,
+    "stagesEmpty": 0,
+    "stagesWithLetter": 0,
+    "minCards": {
+     "min": 30
+    },
+    "minTiles": {
+     "min": 1
+    },
+    "finalCards": {
+     "min": 30
+    },
+    "errors": []
+   }
+  }
+ ]
+}

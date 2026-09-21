@@ -1,0 +1,33 @@
+{
+ "size": [
+  1200,
+  780
+ ],
+ "query": "?shots=1",
+ "steps": [
+  {
+   "js": "__nav('mine'); await __wait(1500); return 1;"
+  },
+  {
+   "shot": "collection.png"
+  },
+  {
+   "js": "__nav('scene'); await __wait(1200); return 1;"
+  },
+  {
+   "shot": "scene.png"
+  },
+  {
+   "js": "__nav('catalog'); document.querySelector('#source-tabs [data-source=cacho]').click(); await __wait(6000); return 1;"
+  },
+  {
+   "shot": "catalog.png"
+  },
+  {
+   "js": "__nav('settings'); document.querySelector('#settings-tabs [data-tab=general]').click(); await __wait(1500); return 1;"
+  },
+  {
+   "shot": "settings.png"
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+name: Bug report
+description: Something does not work, or works wrongly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks. Please look at the [troubleshooting guide](https://github.com/kyzmapiratov/Menagerie/blob/main/docs/troubleshooting.md) first;
+        the usual causes are there.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got. A screenshot helps.
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Distribution and desktop
+      description: For example "Fedora 41, KDE Plasma 6 (Wayland)". `echo $XDG_CURRENT_DESKTOP $XDG_SESSION_TYPE` helps.
+    validations:
+      required: true
+  - type: dropdown
+    id: how
+    attributes:
+      label: How was the app installed
+      options: [install.sh, .deb, .rpm, AppImage, AUR (menagerie), AUR (menagerie-bin), Built from source, Other]
+    validations:
+      required: true
+  - type: input
+    id: engine
+    attributes:
+      label: How was wl_shimeji installed, and which version
+      description: "For example \"AUR wl_shimeji-git 0.0.2.r103\" or \"built from source, commit 787b5a0\"."
+  - type: dropdown
+    id: terminal
+    attributes:
+      label: Does it work without the app?
+      description: Try `shimejictl summon <name>` in a terminal, with a name from your Collection.
+      options: ["Yes, the character appears", "No, it does not appear either", "I did not try"]
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: What the app printed when started from a terminal (`menagerie`), and the overlay's log if there was a crash card (Details → Copy log).
+      render: shell

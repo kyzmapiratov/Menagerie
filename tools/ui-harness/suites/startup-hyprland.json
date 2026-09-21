@@ -1,0 +1,115 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "?hypr=1",
+ "steps": [
+  {
+   "js": [
+    "document.querySelector('[data-view=\"settings\"]').click(); document.querySelector('#settings-tabs [data-tab=\"startup\"]').click(); await __wait(1200);",
+    "const box = document.getElementById('startup-status');",
+    "return {text: box.textContent.trim(), buttons: [...box.querySelectorAll('button')].map((b) => b.textContent), keysShown: !document.getElementById('startup-keys').classList.contains('hidden'), commandsHidden: document.getElementById('startup-cmds').classList.contains('hidden'), preview: document.getElementById('startup-out').textContent, niriWords: (box.textContent.match(/niri/gi) || []).length};"
+   ],
+   "label": "Hyprland, off: its own switch and key bindings, in Hyprland's words",
+   "expect": {
+    "text": {
+     "re": "log in to Hyprland"
+    },
+    "buttons": [
+     "Turn on"
+    ],
+    "keysShown": true,
+    "commandsHidden": true,
+    "preview": {
+     "re": "^exec-once = shimeji-overlayd"
+    },
+    "niriWords": 0
+   }
+  },
+  {
+   "js": [
+    "[...document.querySelectorAll('#startup-status button')].find((b) => b.textContent === 'Turn on').click(); await __wait(500);",
+    "return {dialog: document.body.innerText.includes('Hyprland reloads')};"
+   ],
+   "label": "the question before writing names the config file it touches",
+   "expect": {
+    "dialog": true
+   }
+  },
+  {
+   "js": [
+    "document.getElementById('confirm-yes').click(); await __wait(1000);",
+    "const box = document.getElementById('startup-status');",
+    "return {on: box.classList.contains('on'), text: box.textContent.trim(), calls: (window.__hyprCalls || []).map((c) => c[0])};"
+   ],
+   "label": "turning it on goes to hyprland_enable and shows On",
+   "expect": {
+    "on": true,
+    "text": {
+     "re": "^On\\. .*Hyprland"
+    },
+    "calls": [
+     "enable"
+    ]
+   }
+  },
+  {
+   "js": [
+    "window.__hyprCalls = []; const n = document.getElementById('startup-delay'); n.value = 7; n.dispatchEvent(new Event('input')); await __wait(1400);",
+    "return {calls: window.__hyprCalls.map((c) => c[0]), delay: (window.__hyprCalls[0] || [])[1]?.delay, note: document.getElementById('startup-note').textContent};"
+   ],
+   "label": "a change is written through hyprland_apply",
+   "expect": {
+    "calls": [
+     "apply"
+    ],
+    "delay": 7,
+    "note": {
+     "re": "Hyprland picks the change up"
+    }
+   }
+  },
+  {
+   "js": [
+    "window.__hyprSkipped = ['Mod+XF86AudioPlay: Hyprland spells that key differently and it was not guessed']; window.__hyprValidation = 'not checked'; const n = document.getElementById('startup-delay'); n.value = 8; n.dispatchEvent(new Event('input')); await __wait(1400);",
+    "const note = document.getElementById('startup-note'); const box = document.getElementById('startup-status');",
+    "return {note: note.textContent, warn: box.classList.contains('warn'), on: box.classList.contains('on')};"
+   ],
+   "label": "a key that could not be converted is named; an unchecked write is not an alarm",
+   "expect": {
+    "note": {
+     "re": "XF86AudioPlay[\\s\\S]*|not checked"
+    },
+    "warn": false,
+    "on": true
+   }
+  },
+  {
+   "js": [
+    "window.__hyprSkipped = []; window.__hyprValidation = 'ok'; window.__hyprReject = 'Hyprland rejected the config:\\nline 3: invalid dispatcher'; const n = document.getElementById('startup-delay'); n.value = 9; n.dispatchEvent(new Event('input')); await __wait(1400);",
+    "return {note: document.getElementById('startup-note').textContent, error: document.getElementById('startup-note').classList.contains('error')};"
+   ],
+   "label": "Hyprland rejecting a change is shown in the note",
+   "expect": {
+    "note": {
+     "re": "invalid dispatcher"
+    },
+    "error": true
+   }
+  },
+  {
+   "js": [
+    "window.__hyprReject = null; [...document.querySelectorAll('#startup-status button')].find((b) => b.textContent === 'Turn off').click(); await __wait(800);",
+    "return {text: document.getElementById('startup-status').textContent.trim(), active: !!window.__hyprActive};"
+   ],
+   "label": "and off again",
+   "expect": {
+    "text": {
+     "re": "^Off\\. .*Hyprland"
+    },
+    "active": false
+   }
+  }
+ ]
+}

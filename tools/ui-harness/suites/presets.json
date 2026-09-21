@@ -1,0 +1,33 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "?presets=1",
+ "steps": [
+  {
+   "js": [
+    "__nav('scene'); await __wait(900);",
+    "return [...document.querySelectorAll('.preset-card')].map((c) => { const n = c.querySelector('.preset-name'); return {name: n.textContent, width: Math.round(n.getBoundingClientRect().width), clipped: n.scrollHeight > n.clientHeight + 2}; });"
+   ],
+   "label": "every preset's name can be read, even one letter or a very long one",
+   "expect": {
+    "every": {
+     "width": {
+      "min": 120
+     }
+    }
+   }
+  },
+  {
+   "js": [
+    "const cards = [...document.querySelectorAll('.preset-card')];",
+    "return {crossOverButton: cards.filter((c) => { const a = c.querySelector('.preset-del').getBoundingClientRect(), b = c.querySelector('.preset-go').getBoundingClientRect(); return !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom); }).length};"
+   ],
+   "label": "the delete cross never sits on the play button",
+   "expect": {
+    "crossOverButton": 0
+   }
+  }
+ ]
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "menagerie",
+  "version": "1.0.0",
+  "identifier": "io.github.kyzmapiratov.Menagerie",
+  "build": {
+    "frontendDist": "../src"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Menagerie",
+        "width": 980,
+        "height": 660,
+        "minWidth": 720,
+        "minHeight": 480,
+        "resizable": true,
+        "transparent": false,
+        "decorations": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost https://shimejis.xyz https://*.shimejis.xyz https://cachomon.com data:; style-src 'self' 'unsafe-inline'",
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$HOME/.local/share/menagerie/sprites/*"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "deb",
+      "rpm",
+      "appimage"
+    ],
+    "category": "Utility",
+    "shortDescription": "Browse, install and summon Shimeji characters",
+    "longDescription": "A front end for wl_shimeji, the Wayland engine that draws Shimeji: a catalog of a few thousand characters, one-click installs, a collection view, a scene with presets, and start-at-login. wl_shimeji itself is installed separately.",
+    "publisher": "Menagerie contributors",
+    "homepage": "https://github.com/kyzmapiratov/Menagerie",
+    "license": "MIT",
+    "licenseFile": "../LICENSE",
+    "copyright": "Copyright (c) Menagerie contributors",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/256x256.png",
+      "icons/icon.png"
+    ],
+    "linux": {
+      "deb": {
+        "section": "utils",
+        "depends": [
+          "libssl3 | libssl3t64"
+        ],
+        "files": {
+          "/usr/share/metainfo/io.github.kyzmapiratov.Menagerie.metainfo.xml": "../packaging/io.github.kyzmapiratov.Menagerie.metainfo.xml"
+        },
+        "desktopTemplate": "../packaging/menagerie.desktop"
+      },
+      "rpm": {
+        "depends": [
+          "openssl-libs"
+        ],
+        "files": {
+          "/usr/share/metainfo/io.github.kyzmapiratov.Menagerie.metainfo.xml": "../packaging/io.github.kyzmapiratov.Menagerie.metainfo.xml"
+        },
+        "desktopTemplate": "../packaging/menagerie.desktop"
+      }
+    }
+  }
+}

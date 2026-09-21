@@ -1,0 +1,56 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "document.querySelector('[data-view=\"settings\"]').click(); document.querySelector('#settings-tabs [data-tab=\"app\"]').click(); await __wait(1000);",
+    "const row = [...document.querySelectorAll('#app-panels .opt')].find((r) => r.querySelector('.opt-name')?.textContent === 'Characters');",
+    "return {buttons: [...row.querySelectorAll('button')].map((b) => b.textContent)};"
+   ],
+   "label": "the Characters row offers Move…",
+   "expect": {
+    "buttons": {
+     "has": "Move…"
+    }
+   }
+  },
+  {
+   "js": [
+    "window.__pickPath = '/run/media/demo/BIG/characters'; [...document.querySelectorAll('#app-panels button')].find((b) => b.textContent === 'Move…').click(); await __wait(800);",
+    "const asked = {open: !document.getElementById('confirm').classList.contains('hidden'), text: document.getElementById('confirm-text').textContent};",
+    "document.getElementById('confirm-yes').click(); await __wait(1300);",
+    "return {asked, movedTo: window.__movedTo, toast: (document.querySelector('.toast') || {}).textContent};"
+   ],
+   "label": "it explains first, then moves, and says the old copy is in the Trash",
+   "expect": {
+    "asked": {
+     "open": true,
+     "text": {
+      "has": "checked before the old copy goes to the trash"
+     }
+    },
+    "movedTo": "/run/media/demo/BIG/characters",
+    "toast": {
+     "has": "trash"
+    }
+   }
+  },
+  {
+   "js": [
+    "window.__pickPath = '/tmp/busy-folder'; [...document.querySelectorAll('#app-panels button')].find((b) => b.textContent === 'Move…').click(); await __wait(800);",
+    "return {askedAnyway: !document.getElementById('confirm').classList.contains('hidden'), toast: (document.querySelector('.toast') || {}).textContent};"
+   ],
+   "label": "a folder that is not free is refused before anything is asked",
+   "expect": {
+    "askedAnyway": false,
+    "toast": {
+     "has": "other things in it"
+    }
+   }
+  }
+ ]
+}

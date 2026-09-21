@@ -1,0 +1,183 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push to the same branch makes the previous run pointless.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Rust (clippy + tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Tauri needs these to build at all, even for `cargo test`.
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Clippy
+        working-directory: src-tauri
+        run: cargo clippy --locked --all-targets -- -D warnings
+
+      # Tests that need a live wl_shimeji, an installed character or the `niri`
+      # binary check for them and return early, so the suite is green on a
+      # bare runner. The ones that change a live session are #[ignore]d.
+      - name: Tests
+        working-directory: src-tauri
+        run: cargo test --locked
+
+  frontend:
+    name: Front end (syntax)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # The UI has no build step, so there is nothing to compile — but a typo
+      # in a module would only show up as a blank window at runtime.
+      - name: Check every module parses
+        run: |
+          for f in src/*.js; do
+            echo "  $f"
+            node --check "$f"
+          done
+
+      # Every module index.html or another module imports has to exist.
+      - name: Check imports resolve
+        run: |
+          status=0
+          for f in src/*.js; do
+            for target in $(grep -oE "from \"\./[^\"]+\"" "$f" | sed -E 's/from "\.\/(.*)"/\1/'); do
+              [ -f "src/$target" ] || { echo "$f imports missing src/$target"; status=1; }
+            done
+          done
+          exit $status
+
+  # The interface, in the same engine the app renders with, on made-up data. It runs off screen under a
+  # virtual display. It does not block a merge yet: it has been run on developers' machines, and a runner
+  # is a new place for WebKit to surprise us. Once it has been green here for a while, drop `continue-on-error`.
+  ui:
+    name: Interface (WebKitGTK, off screen)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: WebKitGTK and a virtual display
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3-gi gir1.2-gtk-3.0 gir1.2-webkit2-4.1 xvfb
+      - name: Run the suites
+        run: xvfb-run -a python3 tools/ui-harness/run.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-harness-output
+          path: tools/ui-harness/out/
+          if-no-files-found: ignore
+
+  packaging:
+    name: Packaging files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: sudo apt-get update && sudo apt-get install -y desktop-file-utils appstream shellcheck
+
+      - name: Launcher entry and AppStream metadata are valid
+        run: |
+          desktop-file-validate packaging/menagerie.desktop
+          appstreamcli validate --no-net packaging/io.github.kyzmapiratov.Menagerie.metainfo.xml
+
+      - name: Shell scripts
+        run: shellcheck --severity=warning install.sh uninstall.sh packaging/*.sh
+
+      - name: The versions in Cargo.toml, tauri.conf.json and package.json agree
+        run: |
+          cargo_v=$(sed -n 's/^version *= *"\(.*\)"/\1/p' src-tauri/Cargo.toml | head -1)
+          tauri_v=$(sed -n 's/.*"version": *"\(.*\)".*/\1/p' src-tauri/tauri.conf.json | head -1)
+          npm_v=$(sed -n 's/.*"version": *"\(.*\)".*/\1/p' package.json | head -1)
+          echo "Cargo $cargo_v, Tauri $tauri_v, npm $npm_v"
+          [ "$cargo_v" = "$tauri_v" ] && [ "$cargo_v" = "$npm_v" ]
+
+      - name: The release tarball has everything an install needs
+        run: |
+          cp /bin/true /tmp/stand-in
+          packaging/make-tarball.sh /tmp/stand-in /tmp/out
+          (cd /tmp/out && sha256sum -c ./*.sha256)
+          listing=$(tar tzf /tmp/out/*.tar.gz)
+          for f in bin/menagerie share/applications/menagerie.desktop \
+                   share/metainfo/io.github.kyzmapiratov.Menagerie.metainfo.xml \
+                   share/icons/hicolor/scalable/apps/menagerie.svg; do
+            echo "$listing" | grep -q "$f" || { echo "missing $f"; exit 1; }
+          done
+
+      - name: The installer explains itself
+        run: ./install.sh --help
+
+  # The package names in install.sh are the part most likely to be wrong on a distribution
+  # nobody tested it on, so every family gets the real thing: the dependencies are installed
+  # and wl_shimeji is built from source and run.
+  installer:
+    name: install.sh (${{ matrix.image }})
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    env:
+      MENAGERIE_ALLOW_ROOT: "1"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: debian:12
+            engine: true
+          - image: ubuntu:24.04
+            engine: true
+          - image: fedora:latest
+            engine: true
+          - image: opensuse/tumbleweed
+            engine: true
+          # Arch gets wl_shimeji from the AUR, which needs makepkg and so a non-root user.
+          - image: archlinux:latest
+            engine: false
+    steps:
+      - name: Tools that checkout and the installer need
+        run: |
+          if command -v apt-get > /dev/null; then apt-get update && apt-get install -y git curl ca-certificates
+          # Fedora's image has curl-minimal, which already provides curl; asking for "curl" conflicts with it.
+          elif command -v dnf > /dev/null; then dnf install -y git tar
+          elif command -v zypper > /dev/null; then zypper --non-interactive install git tar gzip curl
+          elif command -v pacman > /dev/null; then pacman -Syu --noconfirm git curl
+          fi
+      - uses: actions/checkout@v4
+
+      - name: Build dependencies install
+        run: ./install.sh --deps-only --yes
+
+      - name: wl_shimeji builds, installs and runs
+        if: matrix.engine
+        run: |
+          ./install.sh --engine-only --yes
+          shimejictl --help > /dev/null
+          command -v shimeji-overlayd

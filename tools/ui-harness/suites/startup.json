@@ -1,0 +1,60 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "?kde=1",
+ "steps": [
+  {
+   "js": [
+    "document.querySelector('[data-view=\"settings\"]').click(); document.querySelector('#settings-tabs [data-tab=\"startup\"]').click(); await __wait(1200);",
+    "const box = document.getElementById('startup-status');",
+    "return {hint: document.getElementById('startup-cmd-hint').textContent, text: box.textContent.trim(), buttons: [...box.querySelectorAll('button')].map((b) => b.textContent), bindsHidden: document.getElementById('startup-keys').classList.contains('hidden'), commandsShown: !document.getElementById('startup-cmds').classList.contains('hidden')};"
+   ],
+   "label": "off KDE: the same switch, no niri, commands instead of key bindings",
+   "expect": {
+    "text": {
+     "re": "log in to KDE"
+    },
+    "buttons": [
+     "Turn on"
+    ],
+    "bindsHidden": true,
+    "commandsShown": true,
+    "hint": {
+     "re": "System Settings"
+    }
+   }
+  },
+  {
+   "js": [
+    "[...document.querySelectorAll('#startup-status button')].find((b) => b.textContent === 'Turn on').click(); await __wait(900);",
+    "const box = document.getElementById('startup-status');",
+    "window.__autoOptions = null; const n = document.getElementById('startup-delay'); n.value = 8; n.dispatchEvent(new Event('input')); await __wait(1400);",
+    "return {on: box.classList.contains('on'), text: box.textContent.trim(), rewrittenWithDelay: (window.__autoOptions || {}).delay};"
+   ],
+   "label": "turning it on writes the entry, and a change is written again",
+   "expect": {
+    "on": true,
+    "text": {
+     "re": "^On\\."
+    },
+    "rewrittenWithDelay": 8
+   }
+  },
+  {
+   "js": [
+    "[...document.querySelectorAll('#startup-status button')].find((b) => b.textContent === 'Turn off').click(); await __wait(800);",
+    "return {active: !!(window.__auto || {}).active, text: document.getElementById('startup-status').textContent.trim(), niriWords: (document.getElementById('startup-status').textContent.match(/niri/gi) || []).length};"
+   ],
+   "label": "and off again",
+   "expect": {
+    "active": false,
+    "text": {
+     "re": "^Off\\."
+    },
+    "niriWords": 0
+   }
+  }
+ ]
+}

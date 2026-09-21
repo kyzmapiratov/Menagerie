@@ -1,0 +1,47 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "",
+ "steps": [
+  {
+   "js": [
+    "await __wait(1500); __nav('scene'); await __wait(900);",
+    "const box = document.getElementById('overlay-alert');",
+    "const before = box.classList.contains('hidden');",
+    "// The overlay is cut off by the app: its exit is a signal, and the app says why.",
+    "window.__crashList = [{ time_ms: Date.now(), signal: 9, cut_off: true }];",
+    "window.__crash(); window.dispatchEvent(new Event('focus')); await __wait(2500);",
+    "return { hiddenBefore: before, shown: !box.classList.contains('hidden'), title: box.querySelector('.alert-title')?.textContent, says: box.querySelector('.alert-sub')?.textContent, button: box.querySelector('.btn')?.textContent, red: !box.classList.contains('calm') };"
+   ],
+   "label": "an overlay the app had to end for losing the desktop says so, and offers to bring everyone back",
+   "expect": {
+    "hiddenBefore": true,
+    "shown": true,
+    "title": "The overlay lost its connection",
+    "says": {
+     "re": "connection.*ended it.*Nothing was lost"
+    },
+    "button": {
+     "re": "Bring (it|them) back"
+    },
+    "red": true
+   }
+  },
+  {
+   "js": [
+    "// A plain crash keeps its own words: the new case must not have taken them over.",
+    "window.__overlay = true; window.dispatchEvent(new Event('focus')); await __wait(800);",
+    "window.__crashList = [{ time_ms: Date.now(), signal: 11, cut_off: false }];",
+    "window.__crash(); window.dispatchEvent(new Event('focus')); await __wait(2500);",
+    "const box = document.getElementById('overlay-alert');",
+    "return { title: box.querySelector('.alert-title')?.textContent };"
+   ],
+   "label": "a plain crash is still called a crash",
+   "expect": {
+    "title": "The overlay crashed"
+   }
+  }
+ ]
+}

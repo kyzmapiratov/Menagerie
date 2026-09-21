@@ -1,0 +1,42 @@
+# Maintainer: Your Name <you@example.com>
+#
+# Builds Menagerie from the release tarball. Try it without publishing anything:
+#
+#   cd packaging/arch/menagerie && makepkg -si
+#
+# Before submitting this to the AUR: fill in the maintainer line, and run `updpkgsums`
+# (from pacman-contrib) once the tag exists, to replace SKIP with the real checksum.
+# `menagerie-bin` next to this folder installs the prebuilt release instead.
+
+pkgname=menagerie
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Browse, install and summon Shimeji characters for wl_shimeji on Wayland"
+arch=('x86_64' 'aarch64')
+url="https://github.com/kyzmapiratov/Menagerie"
+license=('MIT')
+
+# wl_shimeji is the engine that actually draws the characters. Without it the app
+# starts, and tells you so, but has nothing to drive.
+depends=('webkit2gtk-4.1' 'gtk3' 'openssl' 'wl_shimeji-git')
+optdepends=('libayatana-appindicator: the tray icon (the app works without it)')
+makedepends=('cargo' 'nodejs' 'npm')
+
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "Menagerie-$pkgver"
+  # The incremental cache is ~400 MB and is thrown away after a package build.
+  export CARGO_INCREMENTAL=0 RUSTUP_TOOLCHAIN=stable
+  npm ci --no-audit --no-fund
+  npm run tauri build -- --no-bundle
+}
+
+# No check(): the tests need a second, debug build of everything and run in CI already.
+
+package() {
+  cd "Menagerie-$pkgver"
+  # The same script puts every install (this, the tarball, install.sh) in the same layout.
+  packaging/stage.sh src-tauri/target/release/menagerie "$pkgdir/usr"
+}

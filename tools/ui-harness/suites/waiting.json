@@ -1,0 +1,143 @@
+{
+ "size": [
+  1100,
+  760
+ ],
+ "query": "?presets=1",
+ "steps": [
+  {
+   "js": [
+    "const rect = (e) => { const b = e.getBoundingClientRect(); return [b.left, b.top, b.width, b.height].map((x) => Math.round(x * 10) / 10); };",
+    "const st = (e) => getComputedStyle(e);",
+    "const clear = (c) => c === 'rgba(0, 0, 0, 0)' || c === 'transparent';",
+    "const cases = [",
+    "  { name: 'button', view: 'scene', pick: () => document.getElementById('random-summon'), label: 'hidden' },",
+    "  { name: 'tile', view: 'scene', pick: () => document.querySelector('.tile'), card: true },",
+    "  { name: 'preset', view: 'scene', pick: () => [...document.querySelectorAll('.preset-card')].find((c) => c.textContent.includes('Work desk')), card: true, host: '.preset-go' },",
+    "  { name: 'small button on a card', view: 'mine', pick: () => document.querySelector('#mine .char-actions .btn'), label: 'hidden' },",
+    "  { name: 'link', view: 'mine', pick: () => document.querySelector('#mine .link-btn'), label: 'kept' },",
+    "  { name: 'round button', view: 'catalog', pick: () => document.getElementById('reload-catalog'), label: 'hidden' },",
+    "];",
+    "const R = [];",
+    "for (const c of cases) {",
+    "  __nav(c.view); await __wait(750);",
+    "  const el = c.pick(); const host = c.host ? el.querySelector(c.host) : el;",
+    "  const before = rect(el); window.__latAll = 700; el.click(); await __wait(420);",
+    "  const mark = host.querySelector(':scope > .wm'); const after = rect(el);",
+    "  const r = { name: c.name, mark: !!mark, moved: JSON.stringify(before) !== JSON.stringify(after) };",
+    "  if (mark) {",
+    "    const turn = mark.querySelector('svg.sp'), arc = mark.querySelector('svg.sp .hd'), m = rect(mark), h = rect(host);",
+    "    r.arc = !!arc && st(turn).animationName === 'spin-turn' && st(arc).animationName === 'spin-breathe';",
+    "    r.size = m[2] > 10 && m[2] === m[3];",
+    "    r.placed = c.name === 'link' ? m[0] + m[2] <= h[0] + 1 : Math.abs(m[0] + m[2] / 2 - (h[0] + h[2] / 2)) < 1.5 && Math.abs(m[1] + m[3] / 2 - (h[1] + h[3] / 2)) < 1.5;",
+    "    if (c.label) r.label = c.label === 'hidden' ? clear(st(el).color) : !clear(st(el).color);",
+    "    if (c.name === 'tile') { r.dims = /opacity\\(0\\.55\\)/.test(st(el.querySelector('.tile-stage')).filter); r.hiddenStaysHidden = st(el.querySelector('.tile-x')).opacity === '0'; }",
+    "    if (c.name === 'preset') { r.keepsText = st(el.querySelector('.preset-text')).filter === 'none'; r.chipShown = st(host).opacity === '1'; }",
+    "  }",
+    "  window.__latAll = 0; let waited = 0;",
+    "  while (host.querySelector(':scope > .wm') && waited < 15000) { await __wait(100); waited += 100; }",
+    "  r.gone = !host.querySelector(':scope > .wm') && !el.classList.contains('busy') && !el.classList.contains('busy-card');",
+    "  R.push(r); await __wait(300);",
+    "}",
+    "const all = (k) => R.filter((r) => r[k] === false || (k === 'mark' && !r.mark)).map((r) => r.name);",
+    "return { checked: R.length, noMark: R.filter((r) => !r.mark).map((r) => r.name), moved: R.filter((r) => r.moved).map((r) => r.name),",
+    "  notTheArc: R.filter((r) => r.arc === false).map((r) => r.name), wrongSize: R.filter((r) => r.size === false).map((r) => r.name),",
+    "  misplaced: R.filter((r) => r.placed === false).map((r) => r.name), labelWrong: R.filter((r) => r.label === false).map((r) => r.name),",
+    "  tileDimsALittle: R.find((r) => r.name === 'tile').dims === true, hiddenStaysHidden: R.find((r) => r.name === 'tile').hiddenStaysHidden === true,",
+    "  presetKeepsItsText: R.find((r) => r.name === 'preset').keepsText === true, presetChipShown: R.find((r) => r.name === 'preset').chipShown === true,",
+    "  stillThere: R.filter((r) => !r.gone).map((r) => r.name) };"
+   ],
+   "label": "the spinner appears where it belongs, takes the label's place, moves nothing and goes away",
+   "expect": {
+    "checked": 6,
+    "noMark": [],
+    "moved": [],
+    "notTheArc": [],
+    "wrongSize": [],
+    "misplaced": [],
+    "labelWrong": [],
+    "tileDimsALittle": true,
+    "hiddenStaysHidden": true,
+    "presetKeepsItsText": true,
+    "presetChipShown": true,
+    "stillThere": []
+   }
+  },
+  {
+   "js": [
+    "__nav('catalog'); await __wait(600); document.getElementById('crumb-root').click(); await __wait(400);",
+    "window.__latAll = 900; document.querySelector('#packs .pack').click(); await __wait(300);",
+    "const inline = document.querySelector('#catalog-note .spin');",
+    "const has = !!inline && !!inline.querySelector('svg.sp .hd');",
+    "const turning = has && getComputedStyle(inline.querySelector('svg.sp')).animationName === 'spin-turn';",
+    "const w = has ? Math.round(inline.getBoundingClientRect().width) : 0;",
+    "window.__latAll = 0; await __wait(2500);",
+    "return { inlineHasTheArc: has, inlineTurns: turning, inlineWidth: w };"
+   ],
+   "label": "the inline \"Loading…\" (where no button is spinning) carries the same arc",
+   "expect": {
+    "inlineHasTheArc": true,
+    "inlineTurns": true,
+    "inlineWidth": 12
+   }
+  },
+  {
+   "js": [
+    "__nav('scene'); await __wait(900);",
+    "window.__crash(); __nav('mine'); await __wait(400); __nav('scene'); await __wait(900);",
+    "const back = [...document.querySelectorAll('.scene-empty button')].find((b) => b.textContent.startsWith('Bring back'));",
+    "if (!back) return { found: false };",
+    "window.__latAll = 900; back.click(); await __wait(420);",
+    "// The svg turns, so its bounding box is not its size: the wrapper's box and the svg's computed size are.",
+    "const wm = back.querySelector(':scope > .wm'), svg = wm.querySelector('svg.sp');",
+    "const b = back.getBoundingClientRect(), w = wm.getBoundingClientRect(), css = getComputedStyle(svg);",
+    "const out = { found: true, box: Math.round(w.width), svgWidth: css.width, svgHeight: css.height,",
+    "  centred: Math.abs(w.left + w.width / 2 - (b.left + b.width / 2)) < 1.5 && Math.abs(w.top + w.height / 2 - (b.top + b.height / 2)) < 1.5,",
+    "  stroke: css.strokeWidth, opacity: css.opacity };",
+    "window.__latAll = 0; await __wait(2500); return out;"
+   ],
+   "label": "a page rule that styles every svg (the empty scene's icon) cannot resize, thin or shift the spinner",
+   "expect": {
+    "found": true,
+    "box": 16,
+    "svgWidth": "16px",
+    "svgHeight": "16px",
+    "centred": true,
+    "stroke": "2.4px",
+    "opacity": "1"
+   }
+  },
+  {
+   "js": [
+    "__nav('mine'); await __wait(900);",
+    "[...document.querySelectorAll('#mine .sel-dot')].slice(0, 2).forEach((d) => d.click()); await __wait(400);",
+    "const bar = document.getElementById('selbar'); const buttons = [...document.querySelectorAll('#selbar-actions button')];",
+    "const summon = buttons.find((b) => b.textContent.trim() === 'Summon' || b.querySelector('.wm')), del = buttons.find((b) => b !== summon);",
+    "const before = { shown: !bar.classList.contains('hidden'), count: document.getElementById('selbar-count').textContent };",
+    "window.__latAll = 900; summon.click(); await __wait(450);",
+    "const during = { barStillShown: !bar.classList.contains('hidden'), spinner: !!summon.querySelector(':scope > .wm svg.sp'), labelGone: getComputedStyle(summon).color === 'rgba(0, 0, 0, 0)',",
+    "  countKept: document.getElementById('selbar-count').textContent === before.count, otherWaits: getComputedStyle(del).pointerEvents === 'none', otherNotDimmed: getComputedStyle(del).opacity === '1' };",
+    "window.__latAll = 0; let waited = 0; while (!bar.classList.contains('hidden') && waited < 12000) { await __wait(100); waited += 100; }",
+    "return { before, during, barGoneAfterwards: bar.classList.contains('hidden') };"
+   ],
+   "label": "Summon in the selection bar keeps the bar and shows the spinner until it is done, then clears the selection",
+   "expect": {
+    "before": {
+     "shown": true,
+     "count": {
+      "re": "^2 selected"
+     }
+    },
+    "during": {
+     "barStillShown": true,
+     "spinner": true,
+     "labelGone": true,
+     "countKept": true,
+     "otherWaits": true,
+     "otherNotDimmed": true
+    },
+    "barGoneAfterwards": true
+   }
+  }
+ ]
+}

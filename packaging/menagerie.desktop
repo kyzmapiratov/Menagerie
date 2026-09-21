@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Name=Menagerie
+GenericName=Desktop mascots
+Comment=Browse, install and summon Shimeji characters
+Exec=menagerie
+Icon=menagerie
+Terminal=false
+Categories=Utility;
+Keywords=shimeji;mascot;desktop pet;wayland;wl_shimeji;
+StartupWMClass=menagerie
+Actions=dismiss-all;stop-overlay;
+
+# Right-click menu of the launcher, and on KDE also actions you can give a global shortcut in
+# System Settings > Shortcuts. `timeout -s INT` cancels the mouse selection `dismiss --all` waits for.
+[Desktop Action dismiss-all]
+Name=Dismiss all characters
+Exec=timeout -s INT 0.7 shimejictl mascot dismiss --all
+
+[Desktop Action stop-overlay]
+Name=Stop the overlay
+Exec=shimejictl stop

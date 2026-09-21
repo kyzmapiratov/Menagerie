@@ -23,20 +23,7 @@
   <a href="https://aur.archlinux.org/packages/menagerie-bin"><img alt="AUR" src="https://img.shields.io/badge/arch%20linux-aur-1793d1?style=flat-square"></a>
 </p>
 
-<p align="center">
-  <img src="docs/img/showcase-preview.png" alt="Menagerie desktop session" width="880">
-  <br>
-  <sub>
-    <b>Video Walkthrough (1080p):</b>
-    <a href="docs/img/walkthrough.mp4"><b>MP4</b></a> ·
-    <a href="docs/img/walkthrough.webm"><b>WebM</b></a>
-    &nbsp;·&nbsp; Chapters:
-    <a href="docs/img/part1_catalog.mp4">Catalog</a> ·
-    <a href="docs/img/part2_collection.mp4">Collection</a> ·
-    <a href="docs/img/part3_scene.mp4">Scene</a> ·
-    <a href="docs/img/part4_settings.mp4">Settings</a>
-  </sub>
-</p>
+https://github.com/user-attachments/assets/058f1f1b-2129-426c-a748-adcb52928997
 
 Menagerie is the desktop app that [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) — the Wayland
 engine that actually draws the characters — never had: a catalog of a few thousand characters, one-click installs, a

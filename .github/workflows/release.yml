@@ -25,7 +25,7 @@ jobs:
             arch: aarch64
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: The tag and the versions agree
         if: startsWith(github.ref, 'refs/tags/v')

@@ -103,9 +103,9 @@ ones change a live session, so do not run them casually.
 **Code & Commits**
 - Comments say *why*, especially where the engine surprised us. No framework or bundler on the front end. No `cargo fmt` gate —
   match the file you are editing.
-- **Commit messages follow Conventional Commits**: `fix:` (bug fix -> future patch), `feat:` (new feature -> future minor),
-  `feat!:` / `fix!:` (breaking change -> future major), `docs:` (documentation), `refactor:` (code restructuring),
-  `chore:` / `ci:` (tooling, dependencies).
+- **Commit messages follow Conventional Commits**: `<prefix>: <subject>` followed by a blank line and an explanatory **body (description)** for all non-trivial changes:
+  - Subject line: imperative mood, lowercase, <= 72 chars. Prefixes: `fix:` (future patch), `feat:` (future minor), `feat!:` / `fix!:` (future major), `docs:`, `refactor:`, `chore:`, `ci:`.
+  - Body/description: explains **why** the change was made, rationale, and platform/engine context (`wl_shimeji` quirks, WebKitGTK constraints, Wayland protocols). Do not merely rephrase the diff.
 - **Commits are NOT releases**: Never bump version numbers on routine commits or fixes. Keep accumulating changes in
   `[Unreleased]` in `CHANGELOG.md`. Versions are bumped across all 5 files (`Cargo.toml`, `tauri.conf.json`, `package.json`,
   both `PKGBUILD`s) only upon explicit instruction to release.

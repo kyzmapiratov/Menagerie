@@ -44,8 +44,20 @@ When making modifications to the codebase:
 2. **Coding Style & Commit Messages**:
    * Code is written to be read. Comments explain **why** something is done (especially workarounds for `wl_shimeji` quirks), not merely *what* it does.
    * Match the formatting of the existing file. Do not run mass reformatters (`cargo fmt`) that alter whitespace across untouched code.
-   * **Commit Message Format (Conventional Commits)**: All commits must use one of these standard prefixes:
-     | Prefix | Category | Impact on Future Release | Example |
+   * **Commit Structure (Conventional Commits)**:
+     A commit consists of a **Subject** line and, for all non-trivial changes, a **Body (Description)** separated by a blank line:
+
+     ```gitcommit
+     <prefix>: <short imperative summary>
+
+     <Detailed description explaining WHY and context>
+     - Background context and motivation (what problem is solved)
+     - Platform / engine implications (wl_shimeji, WebKitGTK, layer-shell)
+     - Non-obvious trade-offs, edge cases, and safety guarantees
+     ```
+
+   * **Prefixes Table**:
+     | Prefix | Category | Impact on Future Release | Subject Example |
      |---|---|---|---|
      | **`fix:`** | Bug fix, crash prevention, logic fix | Triggers **PATCH** (`1.0.x`) | `fix: handle missing animation frames` |
      | **`feat:`** | New user-facing feature or option | Triggers **MINOR** (`1.x.0`) | `feat: add third character catalog` |
@@ -53,6 +65,32 @@ When making modifications to the codebase:
      | **`docs:`** | Documentation, guides, screenshots | No release trigger | `docs: clarify niri autostart steps` |
      | **`refactor:`** | Code restructuring with no behavior change | No release trigger | `refactor: clean up wayland wire parser` |
      | **`chore:`** / **`ci:`** | Dependencies, build tools, CI pipeline | No release trigger | `chore: update tauri build dependencies` |
+
+   * **Subject Rules**:
+     - Maximum 72 characters.
+     - Imperative mood, present tense ("add", "fix", "clean", not "added", "fixes").
+     - Lowercase after the prefix, no trailing period.
+
+   * **Body (Description) Rules — What to Write**:
+     - **Mandatory** for all `feat`, `fix`, `feat!`, non-trivial `refactor`, and architectural changes. Only trivial 1-line typo/link fixes may omit a body.
+     - **Focus on the WHY**: Explain the motivation and rationale. Why was this change needed? What went wrong previously?
+     - **Explain Engine & Platform Quirks**: Mention specific `wl_shimeji`, WebKitGTK, or Wayland quirks that informed the solution (e.g. why `reload-all` is avoided, why `filter: opacity` was used over `opacity`, why batch sockets prevent lock contention).
+     - **Do NOT merely rephrase the diff**: Do not write "modified line 42 in foo.rs". The diff already shows *what* changed; the description explains *why* and *what consequences* it has.
+     - **Format**: Wrap lines at 72-80 characters, use bullet points where multiple aspects are touched.
+
+   * **Example Commit with Description**:
+     ```gitcommit
+     fix: prevent overlay crash when summoning characters with missing frames
+
+     wl_shimeji terminates abruptly if a character prototype references
+     animation frames that do not exist in its image directory. When
+     importing community archives with incomplete frame sets, this caused
+     silent overlay termination.
+
+     - Automatically detect missing animation frames in pack.rs during import
+     - Synthesize fallback frames from idle sprite to satisfy engine lookup
+     - Add repair_all hook before batch summoning
+     ```
 
 3. **Compositor & Wayland Integrity**:
    * Never claim a compositor is "tested" unless verified on a live running session (niri is the primary tested reference; Hyprland and KDE are checked per documentation).

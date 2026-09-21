@@ -1,5 +1,12 @@
 <p align="center">
-  <img src="docs/img/banner.png" alt="Menagerie - Desktop Shimeji Mascots for Wayland" width="100%">
+  <img src="docs/img/logo.svg" alt="" width="88" height="88">
+</p>
+
+<h1 align="center">Menagerie</h1>
+
+<p align="center">
+  Find, install and summon <b>Shimeji</b> — the little mascots that walk around your screen,<br>
+  climb your windows and throw themselves off the edges — on Wayland.
 </p>
 
 <p align="center">
@@ -9,11 +16,8 @@
   <a href="https://github.com/kyzmapiratov/Menagerie/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/kyzmapiratov/Menagerie?color=blue&label=release"></a>
 </p>
 
-<h1 align="center">Menagerie</h1>
-
 <p align="center">
-  Find, install and summon <b>Shimeji</b> — the little mascots that walk around your screen,<br>
-  climb your windows and throw themselves off the edges — on Wayland.
+  <img src="docs/img/collection.png" alt="The Collection: every installed character, grouped by universe" width="880">
 </p>
 
 Menagerie is the desktop app that [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) — the Wayland
@@ -35,6 +39,10 @@ collection you can browse, a scene you can save and restore, and a way to bring 
   <tr>
     <td width="50%"><img src="docs/img/catalog.png" alt="Catalog"><br><sub><b>Catalog</b> — real previews, what you already have is marked</sub></td>
     <td width="50%"><img src="docs/img/scene.png" alt="Scene"><br><sub><b>Scene</b> — the crowd on screen, and presets to bring it back</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/img/collection.png" alt="Collection"><br><sub><b>Collection</b> — installed characters with favorites and multi-select</sub></td>
+    <td width="50%"><img src="docs/img/settings.png" alt="Settings"><br><sub><b>Settings & Startup</b> — overlay configuration and login autostart</sub></td>
   </tr>
 </table>
 

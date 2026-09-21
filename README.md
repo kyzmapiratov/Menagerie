@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/img/collection.png" alt="The Collection: every installed character, grouped by universe" width="880">
+  <img src="docs/img/preview.gif" alt="Menagerie Walkthrough Preview" width="880">
 </p>
 
 Menagerie is the desktop app that [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) — the Wayland
@@ -45,6 +45,17 @@ collection you can browse, a scene you can save and restore, and a way to bring 
     <td width="50%"><img src="docs/img/settings.png" alt="Settings"><br><sub><b>Settings & Startup</b> — overlay configuration and login autostart</sub></td>
   </tr>
 </table>
+
+<details>
+  <summary><b>Video tour by section (MP4)</b></summary>
+  <ul>
+    <li><a href="docs/img/part1_catalog.mp4"><b>Part 1: Catalog</b></a> — Dual catalog sources (shimejis.xyz and cachomon.com) with character previews</li>
+    <li><a href="docs/img/part2_collection.mp4"><b>Part 2: Collection</b></a> — Character library with universe grouping and multi-selection</li>
+    <li><a href="docs/img/part3_scene.mp4"><b>Part 3: Scene & Presets</b></a> — Active mascots, one-click preset restoration, and Wayland window physics</li>
+    <li><a href="docs/img/part4_settings.mp4"><b>Part 4: Settings & Startup</b></a> — Scale divisor controls and launch at login setup</li>
+    <li><a href="docs/img/walkthrough.mp4"><b>Full Walkthrough (MP4, 1080p)</b></a> · <a href="docs/img/walkthrough.webm">WebM</a></li>
+  </ul>
+</details>
 
 ## Install
 

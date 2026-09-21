@@ -91,7 +91,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends python3-gi gir1.2-gtk-3.0 gir1.2-webkit2-4.1 xvfb
       - name: Run the suites
         run: xvfb-run -a python3 tools/ui-harness/run.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ui-harness-output

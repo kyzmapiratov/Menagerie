@@ -62,24 +62,24 @@ Every route, the engine for each distribution, updating and removal: **[docs/ins
 <table>
   <tr>
     <td width="50%" valign="top">
-      <a href="docs/img/catalog.png"><img src="docs/img/catalog.png" alt="Catalog"></a>
+      <a href="https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/docs/img/catalog.png"><img src="docs/img/catalog.png" alt="Catalog"></a>
       <h3>Catalog</h3>
       Two built-in sources (<code>shimejis.xyz</code> and <code>cachomon.com</code>), live animated previews on hover, fuzzy search across everything, and batch installation.
     </td>
     <td width="50%" valign="top">
-      <a href="docs/img/scene.png"><img src="docs/img/scene.png" alt="Scene & Presets"></a>
+      <a href="https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/docs/img/scene.png"><img src="docs/img/scene.png" alt="Scene & Presets"></a>
       <h3>Scene & Presets</h3>
       Active mascot management powered by <code>wl_shimeji</code> via <code>wlr-layer-shell</code>. Real window physics, climbable borders, and one-click crowd presets.
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <a href="docs/img/collection.png"><img src="docs/img/collection.png" alt="Collection"></a>
+      <a href="https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/docs/img/collection.png"><img src="docs/img/collection.png" alt="Collection"></a>
       <h3>Collection</h3>
       Local mascot library grouped by universe with favorites, sorting, and multi-selection. Drop any Shimeji <code>.zip</code> archive on the window to install.
     </td>
     <td width="50%" valign="top">
-      <a href="docs/img/settings.png"><img src="docs/img/settings.png" alt="Settings & Startup"></a>
+      <a href="https://raw.githubusercontent.com/kyzmapiratov/Menagerie/main/docs/img/settings.png"><img src="docs/img/settings.png" alt="Settings & Startup"></a>
       <h3>Settings & Startup</h3>
       Automatic login autostart setup for <b>niri</b>, <b>Hyprland</b>, and <b>KDE Plasma</b>. Engine scale tuning, process monitoring, and instant crash recovery.
     </td>

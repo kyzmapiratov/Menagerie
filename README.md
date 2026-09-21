@@ -1,5 +1,12 @@
 <p align="center">
-  <img src="docs/img/logo.svg" alt="" width="88" height="88">
+  <img src="docs/img/banner.png" alt="Menagerie - Desktop Shimeji Mascots for Wayland" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License: GPL-2.0" src="https://img.shields.io/badge/license-GPL--2.0-blue.svg"></a>
+  <img alt="Linux · Wayland" src="https://img.shields.io/badge/platform-Linux%20%C2%B7%20Wayland-informational">
+  <a href="https://github.com/kyzmapiratov/Menagerie/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/kyzmapiratov/Menagerie?color=blue&label=release"></a>
 </p>
 
 <h1 align="center">Menagerie</h1>
@@ -7,16 +14,6 @@
 <p align="center">
   Find, install and summon <b>Shimeji</b> — the little mascots that walk around your screen,<br>
   climb your windows and throw themselves off the edges — on Wayland.
-</p>
-
-<p align="center">
-  <a href="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/kyzmapiratov/Menagerie/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="LICENSE"><img alt="License: GPL-2.0" src="https://img.shields.io/badge/license-GPL--2.0-blue.svg"></a>
-  <img alt="Linux · Wayland" src="https://img.shields.io/badge/platform-Linux%20%C2%B7%20Wayland-informational">
-</p>
-
-<p align="center">
-  <img src="docs/img/collection.png" alt="The Collection: every installed character, grouped by universe" width="880">
 </p>
 
 Menagerie is the desktop app that [wl_shimeji](https://github.com/CluelessCatBurger/wl_shimeji) — the Wayland

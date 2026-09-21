@@ -11,6 +11,8 @@ All notable changes to this project are written here. The format follows
 - Improved compositor compatibility overview in documentation.
 - Fixed Python environment variable inheritance (`PYTHONHOME`, `PYTHONPATH`) when running from AppImage packages, preventing `shimejictl` startup failures (`ModuleNotFoundError: No module named 'encodings'`).
 - Fixed default value detection in settings range sliders when the engine returns formatted float values (e.g. `-1.000000` for `OPACITY`), preventing erroneous `-100%` slider state.
+- Ensured default `shimeji-overlayd.conf` initialization before first mascot spawn, allowing the Settings tab to open cleanly on fresh installations with standard defaults (1x size, Monitor sync, 100% opacity).
+- Added default metadata handling for motion smoothing (`INTERPOLATION_FRAMERATE`) to reliably display Monitor sync (`-1`) and Off (`0`).
 
 ## [1.0.0] — first public release
 

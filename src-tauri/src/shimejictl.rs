@@ -1729,6 +1729,40 @@ pub fn start_overlay() -> Result<u32, String> {
 /// Numeric layer values in the config file (wlr-layer-shell).
 const LAYERS: [&str; 4] = ["background", "bottom", "top", "overlay"];
 
+/// Default configuration file content when the engine has never run.
+///
+/// `wl_shimeji` does not create its configuration file until the overlay is started for
+/// the first time. If the user opens Settings before summoning any mascot, `shimejictl config list`
+/// fails with `Config file not found... Please start wl_shimeji at least once`.
+/// By ensuring the default file exists with sensible defaults (normal scale 1x, monitor framerate,
+/// full opacity), Settings can be viewed and edited immediately on a clean install.
+pub fn ensure_config_file() {
+    let conf_path = config_root().join("shimeji-overlayd.conf");
+    if conf_path.exists() {
+        return;
+    }
+    if let Some(parent) = conf_path.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    let default_conf = "\
+breeding=false
+dragging=false
+ie_interactions=false
+ie_throwing=false
+cursor_data=true
+mascot_limit=512
+ie_throw_policy=3
+allow_dismiss_animations=true
+per_mascot_interactions=true
+interpolation_framerate=-1
+overlay_layer=3
+tablets_enabled=true
+mascot_scale=1.000000
+mascot_opacity=-1.000000
+";
+    let _ = std::fs::write(&conf_path, default_conf);
+}
+
 /// Overlay settings.
 ///
 /// Two output formats of `shimejictl config list` (checked on a live system):
@@ -1743,6 +1777,7 @@ const LAYERS: [&str; 4] = ["background", "bottom", "top", "overlay"];
 ///     BREEDING: true
 ///     WLR_SHELL_LAYER: 3
 pub fn config_list() -> Result<Vec<ConfigOption>, String> {
+    ensure_config_file();
     Ok(parse_config(&run(&["config", "list"])?))
 }
 
@@ -1797,6 +1832,7 @@ pub struct SetOutcome {
 }
 
 pub fn config_set(key: &str, value: &str) -> Result<SetOutcome, String> {
+    ensure_config_file();
     let mut value = value.to_string();
 
     // Without the overlay `config set` writes the value to the file as is, and there
@@ -1845,6 +1881,7 @@ fn wants_normal_size(held: &str, has_characters: bool, already_done: bool) -> bo
 
 /// First start on a new machine: normal size instead of the engine's half size. See `wants_normal_size`.
 pub fn first_run_defaults() {
+    ensure_config_file();
     const DONE: &str = "size-default-applied";
     let done = crate::prefs::load().contains_key(DONE);
     if done {
@@ -1852,7 +1889,17 @@ pub fn first_run_defaults() {
     }
     let held = run(&["config", "get", "MASCOT_SCALE"])
         .ok()
-        .and_then(|out| out.lines().find_map(|l| l.split_once('=').map(|(_, v)| v.trim().to_string())));
+        .and_then(|out| {
+            out.lines().find_map(|l| {
+                if let Some((_, v)) = l.split_once('=') {
+                    Some(v.trim().to_string())
+                } else if !l.trim().is_empty() && !l.starts_with('-') {
+                    Some(l.trim().to_string())
+                } else {
+                    None
+                }
+            })
+        });
     // Not answered (no config yet, engine missing): try again next start, do not mark it done.
     let Some(held) = held else { return };
     if wants_normal_size(&held, !installed_names().is_empty(), false) {

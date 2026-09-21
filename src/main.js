@@ -1705,6 +1705,7 @@ const OPTIONS = {
   INTERPOLATION_FRAMERATE: {
     group: "Appearance", name: "Motion smoothing", desc: "Extra frames between the drawn ones",
     type: "range", min: -1, max: 240, step: 1, words: { "-1": "Monitor", "0": "Off" }, suffix: " fps",
+    dflt: "-1", dfltAt: -1, dfltLabel: "Monitor", noReset: true,
   },
   WLR_SHELL_LAYER: {
     group: "Appearance", name: "Layer", desc: "Which windows the characters are drawn above", type: "select",

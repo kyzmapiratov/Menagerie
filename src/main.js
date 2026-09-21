@@ -1936,7 +1936,10 @@ async function loadConfig(showAdvanced = false) {
       });
       ctl.appendChild(sw);
     } else if (meta && meta.type === "range") {
-      const isDefault = (v) => meta.dflt !== undefined && String(v).trim() === meta.dflt;
+      const isDefault = (v) => meta.dflt !== undefined && (
+        String(v).trim() === meta.dflt ||
+        (!isNaN(parseFloat(v)) && !isNaN(parseFloat(meta.dflt)) && parseFloat(v) === parseFloat(meta.dflt))
+      );
       // What the slider shows ← what the engine holds, and back again.
       const fromEngine = (v) => (meta.invert ? 1 / parseFloat(v) : parseFloat(v));
       const toEngine = (v) => (meta.invert ? 1 / parseFloat(v) : parseFloat(v));

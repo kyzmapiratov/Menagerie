@@ -117,6 +117,21 @@ pub fn run_timeout(args: &[&str], seconds: u64) -> Result<String, String> {
     run_program("shimejictl", args, seconds)
 }
 
+/// Prepares a `Command` with Python environment variables cleaned.
+///
+/// When Menagerie is run from an AppImage, the AppImage runtime can export
+/// `PYTHONHOME` and `PYTHONPATH` pointing into its temporary mount directory
+/// (`/tmp/.mount_.../usr`). If child processes inherit these, host `python3`,
+/// `shimejictl`, and `shimeji-overlayd` fail immediately during startup with
+/// `ModuleNotFoundError: No module named 'encodings'`. Removing them restores
+/// normal host Python library resolution.
+fn clean_command<S: AsRef<std::ffi::OsStr>>(program: S) -> Command {
+    let mut cmd = Command::new(program);
+    cmd.env_remove("PYTHONHOME");
+    cmd.env_remove("PYTHONPATH");
+    cmd
+}
+
 /// Runs a program to its end, but not for longer than `seconds`: then it is killed and this says so.
 ///
 /// There used to be no limit, and every call holds the lock the others queue on. One `prototypes export` for a
@@ -129,7 +144,7 @@ fn run_program(program: &str, args: &[&str], seconds: u64) -> Result<String, Str
 /// `run_program` that also hands back what the program printed on stderr. The engine reports what went wrong with
 /// each file it was given only there, and still exits with 0.
 fn run_program_full(program: &str, args: &[&str], seconds: u64) -> Result<(String, String), String> {
-    let mut child = Command::new(program)
+    let mut child = clean_command(program)
         .args(args)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
@@ -199,7 +214,7 @@ pub fn start_convert(
 ) -> Result<(PendingConvert, Vec<String>), String> {
     std::fs::create_dir_all(out_dir).map_err(|e| format!("could not create the folder {}: {e}", out_dir.display()))?;
 
-    let mut child = Command::new("shimejictl")
+    let mut child = clean_command("shimejictl")
         .arg("convert")
         .arg(archive_path)
         .arg("-O")
@@ -977,7 +992,7 @@ pub fn summon(name: &str) -> Result<(), String> {
     let args = ["mascot", "summon", name];
     // Its own process group and a note of it: "Dismiss all" pressed while this is running
     // can end it at once instead of waiting for the second it takes.
-    let child = Command::new("shimejictl")
+    let child = clean_command("shimejictl")
         .args(args)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
@@ -1062,7 +1077,7 @@ pub fn dismiss_all() -> Result<String, String> {
     }
 
     let _guard = lock();
-    let mut child = Command::new("shimejictl")
+    let mut child = clean_command("shimejictl")
         .args(["mascot", "dismiss", "--all"])
         // Without this Python buffers stdout in a pipe and the prompt is not visible.
         .env("PYTHONUNBUFFERED", "1")
@@ -1647,7 +1662,7 @@ pub fn start_overlay() -> Result<u32, String> {
         let _ = writeln!(&log, "--- started by Menagerie (attempt {}) ---", attempt + 1);
         let err_log = log.try_clone().map_err(|e| format!("could not open the log: {e}"))?;
 
-        let mut child = Command::new("shimeji-overlayd")
+        let mut child = clean_command("shimeji-overlayd")
             .stdin(Stdio::null())
             .stdout(log)
             .stderr(err_log)
@@ -2001,7 +2016,7 @@ fn run_helper_with(args: &[&str], stdin: Option<&str>, seconds: u32) -> Result<s
 
 fn run_helper_inner(args: &[&str], stdin: Option<&str>, seconds: u32, cancellable: bool) -> Result<serde_json::Value, String> {
     let _guard = lock();
-    let mut child = Command::new("timeout")
+    let mut child = clean_command("timeout")
         .arg(seconds.to_string())
         .args(["python3", "-c", HELPER])
         .args(args)

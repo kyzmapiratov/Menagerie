@@ -9,6 +9,8 @@ All notable changes to this project are written here. The format follows
 - Relicensed project under GNU General Public License v2 (`GPL-2.0-only`), aligning with `wl_shimeji`.
 - Removed `.github/CODE_OF_CONDUCT.md`.
 - Improved compositor compatibility overview in documentation.
+- Fixed Python environment variable inheritance (`PYTHONHOME`, `PYTHONPATH`) when running from AppImage packages, preventing `shimejictl` startup failures (`ModuleNotFoundError: No module named 'encodings'`).
+- Fixed default value detection in settings range sliders when the engine returns formatted float values (e.g. `-1.000000` for `OPACITY`), preventing erroneous `-100%` slider state.
 
 ## [1.0.0] — first public release
 

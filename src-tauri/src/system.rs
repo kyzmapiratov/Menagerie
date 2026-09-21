@@ -139,7 +139,9 @@ fn ok(cmd: &mut Command) -> bool {
 
 /// Starts a program that keeps running (a file manager) and does not wait for it.
 fn launch(program: &str, arg: &Path) -> bool {
-    match Command::new(program)
+    let mut cmd = Command::new(program);
+    cmd.env_remove("PYTHONHOME").env_remove("PYTHONPATH");
+    match cmd
         .arg(arg)
         .stdin(Stdio::null())
         .stdout(Stdio::null())

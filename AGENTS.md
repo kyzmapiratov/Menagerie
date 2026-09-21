@@ -100,9 +100,15 @@ ones change a live session, so do not run them casually.
 - Preferences live in `prefs.json` through Rust (`store` in util.js), not `localStorage`.
 - Render target is **WebKitGTK 4.1**, not Chromium. A layout that is right in Chrome can be wrong here.
 
-**Code**
+**Code & Commits**
 - Comments say *why*, especially where the engine surprised us. No framework or bundler on the front end. No `cargo fmt` gate —
   match the file you are editing.
+- **Commit messages follow Conventional Commits**: `fix:` (bug fix -> future patch), `feat:` (new feature -> future minor),
+  `feat!:` / `fix!:` (breaking change -> future major), `docs:` (documentation), `refactor:` (code restructuring),
+  `chore:` / `ci:` (tooling, dependencies).
+- **Commits are NOT releases**: Never bump version numbers on routine commits or fixes. Keep accumulating changes in
+  `[Unreleased]` in `CHANGELOG.md`. Versions are bumped across all 5 files (`Cargo.toml`, `tauri.conf.json`, `package.json`,
+  both `PKGBUILD`s) only upon explicit instruction to release.
 
 ## Verifying a UI change without opening a window
 

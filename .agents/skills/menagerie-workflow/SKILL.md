@@ -41,9 +41,19 @@ When making modifications to the codebase:
      ```bash
      CARGO_TARGET_DIR=/tmp/menagerie-target CARGO_INCREMENTAL=0 cargo check
      ```
-2. **Coding Style**:
+2. **Coding Style & Commit Messages**:
    * Code is written to be read. Comments explain **why** something is done (especially workarounds for `wl_shimeji` quirks), not merely *what* it does.
    * Match the formatting of the existing file. Do not run mass reformatters (`cargo fmt`) that alter whitespace across untouched code.
+   * **Commit Message Format (Conventional Commits)**: All commits must use one of these standard prefixes:
+     | Prefix | Category | Impact on Future Release | Example |
+     |---|---|---|---|
+     | **`fix:`** | Bug fix, crash prevention, logic fix | Triggers **PATCH** (`1.0.x`) | `fix: handle missing animation frames` |
+     | **`feat:`** | New user-facing feature or option | Triggers **MINOR** (`1.x.0`) | `feat: add third character catalog` |
+     | **`feat!:`** / **`fix!:`** | Breaking change (incompatible data/schema) | Triggers **MAJOR** (`x.0.0`) | `feat!: overhaul preset file schema` |
+     | **`docs:`** | Documentation, guides, screenshots | No release trigger | `docs: clarify niri autostart steps` |
+     | **`refactor:`** | Code restructuring with no behavior change | No release trigger | `refactor: clean up wayland wire parser` |
+     | **`chore:`** / **`ci:`** | Dependencies, build tools, CI pipeline | No release trigger | `chore: update tauri build dependencies` |
+
 3. **Compositor & Wayland Integrity**:
    * Never claim a compositor is "tested" unless verified on a live running session (niri is the primary tested reference; Hyprland and KDE are checked per documentation).
    * Respect protocol checks in `wayland.rs`. If a protocol (`wp_alpha_modifier_v1`, `wlr-layer-shell`) is missing, gracefully disable the feature and inform the user.
